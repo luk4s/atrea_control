@@ -1,4 +1,5 @@
 ## [Unreleased]
+## [1.1.0] - 2021-10-22
 ### Added
 - to_json
 
