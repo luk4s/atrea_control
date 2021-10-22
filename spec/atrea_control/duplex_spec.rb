@@ -49,5 +49,12 @@ RSpec.describe AtreaControl::Duplex do
     describe "#current_mode" do
       it { expect(duplex.current_mode).to eq "ovladač" }
     end
+
+    describe "#to_json" do
+      it "parsed json" do
+        json = JSON.parse(duplex.to_json)
+        expect(json).to include("current_power" => 86.0, "outdoor_temperature" => 21.4)
+      end
+    end
   end
 end

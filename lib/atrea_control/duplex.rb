@@ -8,8 +8,6 @@ module AtreaControl
   class Duplex
     CONTROL_URI = "https://control.atrea.eu/"
 
-    attr_reader :driver
-
     # @param [String] login
     # @param [String] password
     # @param [Hash] sensors_map which box is related to sensor ID
@@ -21,10 +19,14 @@ module AtreaControl
       @login = login
       @password = password
       @sensors = sensors_map
+    end
+
+    def driver
+      return @driver if defined?(@driver)
 
       options = Selenium::WebDriver::Firefox::Options.new
       options.headless! unless ENV["NO_HEADLESS"]
-      @driver = Selenium::WebDriver.for :firefox, options: options
+      @driver ||= Selenium::WebDriver.for :firefox, options: options
     end
 
     def logged?
@@ -95,14 +97,29 @@ module AtreaControl
       element.find_element(css: "div:first-child").text
     end
 
-    def inspect
-      "<AtreaControl name: '#{name}' outdoor_temperature: #{outdoor_temperature}°C current_power: #{current_power}% current_mode: '#{current_mode}>'"
-    end
-
+    # quit selenium browser
     def close
       @logged = false
       driver.quit
     end
+
+    def as_json(_options = nil)
+      {
+        logged: logged?,
+        current_mode: current_mode,
+        current_power: current_power,
+        outdoor_temperature: outdoor_temperature,
+      }
+    end
+
+    def to_json(*args)
+      as_json.to_json(*args)
+    end
+
+    def inspect
+      "<AtreaControl name: '#{name}' outdoor_temperature: #{outdoor_temperature}°C current_power: #{current_power}% current_mode: '#{current_mode}'>"
+    end
+
 
     private
 
@@ -115,10 +132,10 @@ module AtreaControl
     end
 
     def finish_login
-      8.times do |i|
+      13.times do |i|
         return true if open_dashboard
       rescue Selenium::WebDriver::Error::NoSuchElementError => _e
-        t = 5 * (1 + i)
+        t = [5 * (1 + i), 25].min
         logger.debug "waiting #{t}s for login..."
         sleep t
       end
