@@ -11,7 +11,8 @@ module AtreaControl
     CONTROL_URI = "https://control.atrea.eu/"
 
     attr_reader :current_mode, :current_power, :outdoor_temperature
-    attr_reader :updated_at
+    # @return [DateTime] store time of last update
+    attr_reader :valid_for
 
     # @param [String] login
     # @param [String] password
@@ -26,6 +27,7 @@ module AtreaControl
       @sensors = sensors_map
     end
 
+    # @return [Selenium::WebDriver::Firefox::Driver]
     def driver
       return @driver if defined?(@driver)
 
@@ -59,6 +61,7 @@ module AtreaControl
       driver.get uri
       logger.debug "#{name} login success"
       @logged = true
+      call_unit!
     end
 
     # @return [String]
@@ -93,30 +96,13 @@ module AtreaControl
       @user_unit = element.attribute(:innerHTML).strip.scan(/(\w+)='(\d+)'/).to_h
     end
 
-    # # @return [Float]
-    # def outdoor_temperature
-    #   return unless logged?
-    #
-    #   element = sensor_element(@sensors[__method__])
-    #   element.find_element(css: "div").text.to_f
-    # end
-    #
-    # # @return [Float] in %
-    # def current_power
-    #   return unless logged?
-    #
-    #   # element = driver.find_element id: "contentBox#{@sensors[__method__]}"
-    #   element = sensor_element(@sensors[__method__])
-    #   element.find_element(css: "div:first-child").text.to_f
-    # end
-    #
-    # # @return [String]
-    # def current_mode
-    #   return unless logged?
-    #
-    #   element = sensor_element(@sensors[__method__])
-    #   element.find_element(css: "div:first-child").text
-    # end
+    # @return [String]
+    def current_mode_name
+      return unless logged?
+
+      element = sensor_element(@sensors[:current_mode])
+      element.find_element(css: "div:first-child").text
+    end
 
     # quit selenium browser
     def close
@@ -124,7 +110,7 @@ module AtreaControl
       @user_unit = nil
       @user_auth = nil
       driver.quit
-      remove_instance_variable @driver
+      remove_instance_variable :@driver
     end
 
     alias logout! close
@@ -143,24 +129,24 @@ module AtreaControl
     end
 
     def inspect
-      "<AtreaControl name: '#{name}' outdoor_temperature: #{outdoor_temperature}°C current_power: #{current_power}% current_mode: '#{current_mode}' updated_at=#{@updated_at}>"
+      "<AtreaControl name: '#{name}' outdoor_temperature: #{outdoor_temperature}°C current_power: #{current_power}% current_mode: '#{current_mode_name}' valid_for: #{@valid_for}>"
     end
 
     def call_unit!
       return false unless logged?
 
-      params = {
-        _user: user_id,
-        _unit: unit_id,
-        auth: user_auth,
-        _t: "config/xml.xml",
-      }
-      response = RestClient.get "https://control.atrea.eu/comm/sw/unit.php", { Cookie: "autoLogin=#{CGI.escape([@login, @password].join("\b"))}", params: params }
-      @updated_at = Time.now
-      parse_response(response)
+      parse_response(response_comm_unit)
+      @valid_for = Time.now
+      values
     rescue RestClient::Forbidden
       close
       login && call_unit!
+    end
+
+    # Current sensors values
+    # @return [Hash]
+    def values
+      @sensors.keys.map { |key| [key, send(key)] }.to_h
     end
 
     private
@@ -174,24 +160,21 @@ module AtreaControl
     end
 
     # @param [Hash] values
+    # @return [Hash]
     def refresh_data(values)
       @outdoor_temperature = values[:outdoor_temperature].to_f / 10
       @current_power = values[:current_power].to_f
       @current_mode = mode_map[values[:current_mode]]
 
-      @sensors.keys.map { |key| [key, send(key)] }.to_h
+      values
     end
 
     def mode_map
-      { "0" => "Vypnuto", "1" => "Automat", "2" => "Větrání / CO2", "6" => "Rozvážení" }
+      { "0" => "Vypnuto", "1" => "Automat", "2" => "Větrání", "6" => "Rozvážení" }
     end
 
     def logger
       @logger ||= ::Logger.new($stdout)
-    end
-
-    def sensor_element(sensor_id)
-      driver.find_element id: "contentBox#{sensor_id}"
     end
 
     def finish_login
@@ -203,6 +186,22 @@ module AtreaControl
         sleep t
       end
       raise Error, "unable to login"
+    end
+
+    def sensor_element(sensor_id)
+      driver.find_element id: "contentBox#{sensor_id}"
+    end
+
+    # @return [RestClient::Response]
+    def response_comm_unit
+      params = {
+        _user: user_id,
+        _unit: unit_id,
+        auth: user_auth,
+        _t: "config/xml.xml",
+      }
+      autologin_token = CGI.escape([@login, @password].join("\b"))
+      RestClient.get "https://control.atrea.eu/comm/sw/unit.php", { Cookie: "autoLogin=#{autologin_token}", params: params }
     end
   end
 end
