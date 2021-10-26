@@ -118,18 +118,20 @@ module AtreaControl
     def as_json(_options = nil)
       {
         logged: logged?,
-        current_mode: current_mode,
+        current_mode: current_mode_name,
         current_power: current_power,
         outdoor_temperature: outdoor_temperature,
+        valid_for: valid_for,
       }
     end
+    alias values as_json
 
     def to_json(*args)
       as_json.to_json(*args)
     end
 
     def inspect
-      "<AtreaControl name: '#{name}' outdoor_temperature: #{outdoor_temperature}°C current_power: #{current_power}% current_mode: '#{current_mode_name}' valid_for: #{@valid_for}>"
+      "<AtreaControl name: '#{name}' outdoor_temperature: '#{outdoor_temperature}°C' current_power: '#{current_power}%' current_mode: '#{current_mode_name}' valid_for: '#{valid_for}'>"
     end
 
     def call_unit!
@@ -137,16 +139,10 @@ module AtreaControl
 
       parse_response(response_comm_unit)
       @valid_for = Time.now
-      values
+      as_json
     rescue RestClient::Forbidden
       close
       login && call_unit!
-    end
-
-    # Current sensors values
-    # @return [Hash]
-    def values
-      @sensors.keys.map { |key| [key, send(key)] }.to_h
     end
 
     private
@@ -166,7 +162,7 @@ module AtreaControl
       @current_power = values[:current_power].to_f
       @current_mode = mode_map[values[:current_mode]]
 
-      values
+      as_json
     end
 
     def mode_map
