@@ -30,7 +30,6 @@ RSpec.describe AtreaControl::Duplex do
   describe "#open_dashboard" do
     it "grab object data" do
       duplex.driver.get "file://#{File.join(__dir__, "../fixtures/files/logged.html")}"
-      expect(duplex).to receive(:call_unit!)
       expect { duplex.open_dashboard }.to change(duplex, :logged?)
     end
   end
@@ -63,6 +62,7 @@ RSpec.describe AtreaControl::Duplex do
 
     describe "#call_unit!" do
       it "stub xml" do
+        allow(duplex).to receive(:user_auth).and_return "4012"
         stub_unit!
         expect(duplex.call_unit!).to include current_power: 88.0, outdoor_temperature: 9.3
       end
@@ -70,6 +70,7 @@ RSpec.describe AtreaControl::Duplex do
 
     describe "#to_json" do
       before do
+        allow(duplex).to receive(:user_auth).and_return "4012"
         stub_unit!
         duplex.call_unit!
       end

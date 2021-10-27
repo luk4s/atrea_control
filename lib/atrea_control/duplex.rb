@@ -51,8 +51,7 @@ module AtreaControl
 
       submit = form.find_element(css: "input[type=submit]")
       submit.click
-      finish_login
-      inspect
+      finish_login && inspect
     end
 
     # Retrieve dashboard URI from object tag and open it again
@@ -61,7 +60,6 @@ module AtreaControl
       driver.get uri
       logger.debug "#{name} login success"
       @logged = true
-      call_unit!
     end
 
     # @return [String]
@@ -72,33 +70,24 @@ module AtreaControl
       container.text
     end
 
-    def unit_id
-      user_unit["_unit"]
+    # @return [String] ID of logged user
+    def user_id
+      @user_id ||= driver.execute_script("return window._user")
     end
 
-    def user_id
-      user_unit["_user"]
+    # @return [String] ID of recuperation unit
+    def unit_id
+      @unit_id ||= driver.execute_script("return window._unit")
     end
 
     # @return [String]
     def user_auth
-      return unless logged?
-
       @user_auth ||= driver.execute_script("return window.user")&.[] "auth"
-    end
-
-    # @return [Hash]
-    def user_unit
-      return {} unless logged?
-      return @user_unit if @user_unit
-
-      element = driver.find_element(css: "#msgBox + script")
-      @user_unit = element.attribute(:innerHTML).strip.scan(/(\w+)='(\d+)'/).to_h
     end
 
     # @return [String]
     def current_mode_name
-      return unless logged?
+      return current_mode unless logged?
 
       element = sensor_element(@sensors[:current_mode])
       element.find_element(css: "div:first-child").text
@@ -107,7 +96,6 @@ module AtreaControl
     # quit selenium browser
     def close
       @logged = false
-      @user_unit = nil
       @user_auth = nil
       driver.quit
       remove_instance_variable :@driver
@@ -124,6 +112,7 @@ module AtreaControl
         valid_for: valid_for,
       }
     end
+
     alias values as_json
 
     def to_json(*args)
@@ -135,13 +124,13 @@ module AtreaControl
     end
 
     def call_unit!
-      return false unless logged?
+      return false unless user_auth
 
       parse_response(response_comm_unit)
       @valid_for = Time.now
       as_json
     rescue RestClient::Forbidden
-      close
+      close if @logged
       login && call_unit!
     end
 
@@ -165,6 +154,7 @@ module AtreaControl
       as_json
     end
 
+    # ? I10204 ?
     def mode_map
       { "0" => "Vypnuto", "1" => "Automat", "2" => "Větrání", "6" => "Rozvážení" }
     end
@@ -177,7 +167,7 @@ module AtreaControl
       13.times do |i|
         return true if open_dashboard
       rescue Selenium::WebDriver::Error::NoSuchElementError => _e
-        t = [5 * (1 + i), 25].min
+        t = [3 * (1 + i), 25].min
         logger.debug "waiting #{t}s for login..."
         sleep t
       end
