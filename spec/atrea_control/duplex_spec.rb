@@ -3,8 +3,18 @@ AtreaControl::Duplex::CONTROL_URI = "file://#{File.join(__dir__, "../fixtures/fi
 RSpec.describe AtreaControl::Duplex do
   subject(:duplex) { described_class.new login: "myhome", password: "secret" }
 
+  before do
+    WebMock.disable_net_connect!(allow_localhost: true)
+  end
+
   after do
     duplex.close
+  end
+
+  def stub_unit!
+    fixture = File.join(__dir__, "../fixtures/files/unit.xml")
+    stub_request(:get,
+                 %r{https://control.atrea.eu/comm/sw/unit.php}).to_return(body: File.read(fixture))
   end
 
   describe "#login" do
@@ -38,22 +48,36 @@ RSpec.describe AtreaControl::Duplex do
       it { expect(duplex.unit_id).to eq "123456789" }
     end
 
-    describe "#outdoor_temperature" do
-      it { expect(duplex.outdoor_temperature).to eq 21.4 }
+    # describe "#outdoor_temperature" do
+    #   it { expect(duplex.outdoor_temperature).to eq 21.4 }
+    # end
+    #
+    # describe "#current_power" do
+    #   it { expect(duplex.current_power).to eq 86.0 }
+    # end
+
+    describe "#current_mode_name" do
+      it { expect(duplex.current_mode_name).to eq "ovladač" }
     end
 
-    describe "#current_power" do
-      it { expect(duplex.current_power).to eq 86.0 }
-    end
-
-    describe "#current_mode" do
-      it { expect(duplex.current_mode).to eq "ovladač" }
+    describe "#call_unit!" do
+      it "stub xml" do
+        allow(duplex).to receive(:user_auth).and_return "4012"
+        stub_unit!
+        expect(duplex.call_unit!).to include current_power: 88.0, outdoor_temperature: 9.3
+      end
     end
 
     describe "#to_json" do
+      before do
+        allow(duplex).to receive(:user_auth).and_return "4012"
+        stub_unit!
+        duplex.call_unit!
+      end
+
       it "parsed json" do
         json = JSON.parse(duplex.to_json)
-        expect(json).to include("current_power" => 86.0, "outdoor_temperature" => 21.4)
+        expect(json).to include("current_power" => 88.0, "outdoor_temperature" => 9.3)
       end
     end
   end

@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [1.2.0] - 2021-10-26
+### Changed
+- use internal unit.php for read values
+- reload login automatically if session expire
 ## [1.1.0] - 2021-10-22
 ### Added
 - to_json

@@ -34,5 +34,7 @@ Gem::Specification.new do |spec|
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
 
+  spec.add_dependency "nokogiri", "~> 1.12"
+  spec.add_dependency "rest-client", "~> 2.1"
   spec.add_dependency "selenium-webdriver", "~> 3.142"
 end
