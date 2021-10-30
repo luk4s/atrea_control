@@ -1,4 +1,9 @@
 ## [Unreleased]
+## [1.2.1] - 2021-10-30
+### Changed
+- login procedure
+- ensure logged user by window.user object
+
 ## [1.2.0] - 2021-10-26
 ### Changed
 - use internal unit.php for read values

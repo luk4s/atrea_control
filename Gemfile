@@ -5,6 +5,7 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in atrea_control.gemspec
 gemspec
 
+gem "pry"
 gem "rake", "~> 13.0"
 gem "rspec", "~> 3.10"
 gem "rubocop", "~> 1.7", require: false

@@ -21,7 +21,6 @@ module AtreaControl
     # @option sensors_map [String] :current_power
     # @option sensors_map [String] :current_mode
     def initialize(login:, password:, sensors_map: Config.default_sensors_map)
-      @logged = false
       @login = login
       @password = password
       @sensors = sensors_map
@@ -37,12 +36,26 @@ module AtreaControl
     end
 
     def logged?
-      @logged
+      user&.[] "loged"
+    end
+
+    def login_in_progress?
+      @login_in_progress
     end
 
     # Login into control
     def login
+      @login_in_progress = true
+      logger.debug "start new login"
       driver.get CONTROL_URI
+      submit_login_form if user.nil? || !logged?
+      finish_login
+      @login_in_progress = false
+      inspect
+    end
+
+    # Submit given credentials and proceed login
+    def submit_login_form
       form = driver.find_element(id: "loginFrm")
       username = form.find_element(name: "username")
       username.send_keys @login
@@ -51,7 +64,6 @@ module AtreaControl
 
       submit = form.find_element(css: "input[type=submit]")
       submit.click
-      finish_login && inspect
     end
 
     # Retrieve dashboard URI from object tag and open it again
@@ -59,7 +71,6 @@ module AtreaControl
       uri = driver.find_element(tag_name: "object").attribute "data"
       driver.get uri
       logger.debug "#{name} login success"
-      @logged = true
     end
 
     # @return [String]
@@ -80,9 +91,10 @@ module AtreaControl
       @unit_id ||= driver.execute_script("return window._unit")
     end
 
-    # @return [String]
-    def user_auth
-      @user_auth ||= driver.execute_script("return window.user")&.[] "auth"
+    # Window.user object from atrea
+    # @return [Hash, nil]
+    def user
+      driver.execute_script("return window.user")
     end
 
     # @return [String]
@@ -95,7 +107,6 @@ module AtreaControl
 
     # quit selenium browser
     def close
-      @logged = false
       @user_auth = nil
       driver.quit
       remove_instance_variable :@driver
@@ -124,12 +135,14 @@ module AtreaControl
     end
 
     def call_unit!
-      return false unless user_auth
+      return false if @login_in_progress
 
+      logger.debug "call_unit!"
       parse_response(response_comm_unit)
       @valid_for = Time.now
       as_json
     rescue RestClient::Forbidden
+      logger.debug "session expired..."
       close if @logged
       login && call_unit!
     end
@@ -183,7 +196,7 @@ module AtreaControl
       params = {
         _user: user_id,
         _unit: unit_id,
-        auth: user_auth,
+        auth: user&.[]("auth"),
         _t: "config/xml.xml",
       }
       autologin_token = CGI.escape([@login, @password].join("\b"))
