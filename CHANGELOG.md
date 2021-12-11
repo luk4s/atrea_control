@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [1.3.1] - 2021-12-11
+### Changed
+- version of selenium
+
 ## [1.3.0] - 2021-12-11
 ### Changed
 - store auth tokens outside

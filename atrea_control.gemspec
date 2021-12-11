@@ -36,5 +36,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "nokogiri", "~> 1.12"
   spec.add_dependency "rest-client", "~> 2.1"
-  spec.add_dependency "selenium-webdriver", "~> 3.142"
+  spec.add_dependency "selenium-webdriver", "~> 4.1"
 end
