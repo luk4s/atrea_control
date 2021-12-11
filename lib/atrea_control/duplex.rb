@@ -14,6 +14,8 @@ module AtreaControl
     # @return [DateTime] store time of last update
     attr_reader :valid_for
 
+    attr_accessor :user_id, :unit_id, :auth_token
+
     # @param [String] login
     # @param [String] password
     # @param [Hash] sensors_map which box is related to sensor ID
@@ -32,7 +34,7 @@ module AtreaControl
 
       options = Selenium::WebDriver::Firefox::Options.new
       options.headless! unless ENV["NO_HEADLESS"]
-      @driver ||= Selenium::WebDriver.for :firefox, options: options
+      @driver ||= Selenium::WebDriver.for :firefox, capabilities: [options]
     end
 
     def logged?
@@ -48,10 +50,12 @@ module AtreaControl
       @login_in_progress = true
       logger.debug "start new login"
       driver.get CONTROL_URI
-      submit_login_form if user.nil? || !logged?
+      submit_login_form unless logged?
       finish_login
-      @login_in_progress = false
+      refresh!
       inspect
+    ensure
+      @login_in_progress = false
     end
 
     # Submit given credentials and proceed login
@@ -70,26 +74,30 @@ module AtreaControl
     def open_dashboard
       uri = driver.find_element(tag_name: "object").attribute "data"
       driver.get uri
+      user_id && unit_id && auth_token
       logger.debug "#{name} login success"
     end
 
     # @return [String]
     def name
-      return unless logged?
-
-      container = driver.find_element css: "div#pageTitle > h2"
-      container.text
+      @name ||= driver.find_element(css: "div#pageTitle > h2")&.text if logged?
+      @name
     end
 
-    # @return [String] ID of logged user
-    def user_id
-      @user_id ||= driver.execute_script("return window._user")
-    end
-
-    # @return [String] ID of recuperation unit
-    def unit_id
-      @unit_id ||= driver.execute_script("return window._unit")
-    end
+    # # @return [String] ID of logged user
+    # def user_id
+    #   @user_id ||= driver.execute_script("return window._user")
+    # end
+    #
+    # # @return [String] ID of recuperation unit
+    # def unit_id
+    #   @unit_id ||= driver.execute_script("return window._unit")
+    # end
+    #
+    # # @return [String] session token
+    # def auth_token
+    #   @auth_token ||= user&.[]("auth")
+    # end
 
     # Window.user object from atrea
     # @return [Hash, nil]
@@ -107,8 +115,8 @@ module AtreaControl
 
     # quit selenium browser
     def close
-      @user_auth = nil
       driver.quit
+    ensure
       remove_instance_variable :@driver
     end
 
@@ -116,8 +124,7 @@ module AtreaControl
 
     def as_json(_options = nil)
       {
-        logged: logged?,
-        current_mode: current_mode_name,
+        current_mode: current_mode,
         current_power: current_power,
         outdoor_temperature: outdoor_temperature,
         valid_for: valid_for,
@@ -130,9 +137,9 @@ module AtreaControl
       as_json.to_json(*args)
     end
 
-    def inspect
-      "<AtreaControl name: '#{name}' outdoor_temperature: '#{outdoor_temperature}°C' current_power: '#{current_power}%' current_mode: '#{current_mode_name}' valid_for: '#{valid_for}'>"
-    end
+    # def inspect
+    #   "<AtreaControl name: '#{name}' outdoor_temperature: '#{outdoor_temperature}°C' current_power: '#{current_power}%' current_mode: '#{current_mode}' valid_for: '#{valid_for}'>"
+    # end
 
     def call_unit!
       return false if @login_in_progress
@@ -141,18 +148,25 @@ module AtreaControl
       parse_response(response_comm_unit)
       @valid_for = Time.now
       as_json
-    rescue RestClient::Forbidden
-      logger.debug "session expired..."
-      close if @logged
-      login && call_unit!
     end
 
     private
 
+    # @see scripts.php -> loadRD5Values(node, init)
+    # @note
+    #   if(values[key]>32767) values[key]-=65536;
+    # 			if(params[key] && params[key].offset)
+    # 				values[key]=values[key]-params[key].offset;
+    # 			if(params[key] && params[key].coef)
+    # 				values[key]=values[key]/params[key].coef;
     def parse_response(response)
       xml = Nokogiri::XML response.body
       sensors_values = @sensors.transform_values do |id|
-        xml.xpath("//O[@I=\"#{id}\"]/@V").last&.value
+        value = xml.xpath("//O[@I=\"#{id}\"]/@V").last&.value.to_i
+        value -= 65_536 if value > 32_767
+        # value -= 0 if "offset"
+        # value -= 0 if "coef"
+        value
       end
       refresh_data(sensors_values)
     end
@@ -160,7 +174,7 @@ module AtreaControl
     # @param [Hash] values
     # @return [Hash]
     def refresh_data(values)
-      @outdoor_temperature = values[:outdoor_temperature].to_f / 10
+      @outdoor_temperature = values[:outdoor_temperature].to_f / 10.0
       @current_power = values[:current_power].to_f
       @current_mode = mode_map[values[:current_mode]]
 
@@ -169,7 +183,7 @@ module AtreaControl
 
     # ? I10204 ?
     def mode_map
-      { "0" => "Vypnuto", "1" => "Automat", "2" => "Větrání", "6" => "Rozvážení" }
+      { 0 => "Vypnuto", 1 => "Automat", 2 => "Větrání", 6 => "Rozvážení" }
     end
 
     def logger
@@ -194,13 +208,21 @@ module AtreaControl
     # @return [RestClient::Response]
     def response_comm_unit
       params = {
-        _user: user_id,
+        _user: user_id.to_i,
         _unit: unit_id,
-        auth: user&.[]("auth"),
+        auth: auth_token || "null",
         _t: "config/xml.xml",
       }
       autologin_token = CGI.escape([@login, @password].join("\b"))
       RestClient.get "https://control.atrea.eu/comm/sw/unit.php", { Cookie: "autoLogin=#{autologin_token}", params: params }
     end
+
+    # Update tokens based on current state
+    def refresh!
+      @user_id = driver.execute_script("return window._user")
+      @unit_id = driver.execute_script("return window._unit")
+      @auth_token = user&.[]("auth")
+    end
+
   end
 end

@@ -1,4 +1,9 @@
 ## [Unreleased]
+## [1.3.0] - 2021-12-11
+### Changed
+- store auth tokens outside
+- minimize selenium only for login
+
 ## [1.2.1] - 2021-10-30
 ### Changed
 - login procedure
