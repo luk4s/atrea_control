@@ -15,6 +15,7 @@ module AtreaControl
     attr_reader :valid_for
 
     attr_accessor :user_id, :unit_id, :auth_token
+    attr_writer :user_texts, :user_modes, :modes
 
     # @param [String] login
     # @param [String] password
@@ -74,43 +75,18 @@ module AtreaControl
     def open_dashboard
       uri = driver.find_element(tag_name: "object").attribute "data"
       driver.get uri
-      user_id && unit_id && auth_token
       logger.debug "#{name} login success"
     end
 
     # @return [String]
     def name
-      @name ||= driver.find_element(css: "div#pageTitle > h2")&.text if logged?
-      @name
+      @name ||= user_texts["UnitName"]
     end
-
-    # # @return [String] ID of logged user
-    # def user_id
-    #   @user_id ||= driver.execute_script("return window._user")
-    # end
-    #
-    # # @return [String] ID of recuperation unit
-    # def unit_id
-    #   @unit_id ||= driver.execute_script("return window._unit")
-    # end
-    #
-    # # @return [String] session token
-    # def auth_token
-    #   @auth_token ||= user&.[]("auth")
-    # end
 
     # Window.user object from atrea
     # @return [Hash, nil]
     def user
       driver.execute_script("return window.user")
-    end
-
-    # @return [String]
-    def current_mode_name
-      return current_mode unless logged?
-
-      element = sensor_element(@sensors[:current_mode])
-      element.find_element(css: "div:first-child").text
     end
 
     # quit selenium browser
@@ -137,17 +113,49 @@ module AtreaControl
       as_json.to_json(*args)
     end
 
-    # def inspect
-    #   "<AtreaControl name: '#{name}' outdoor_temperature: '#{outdoor_temperature}°C' current_power: '#{current_power}%' current_mode: '#{current_mode}' valid_for: '#{valid_for}'>"
-    # end
-
     def call_unit!
       return false if @login_in_progress
 
       logger.debug "call_unit!"
-      parse_response(response_comm_unit)
+      parse_values(response_comm_unit)
       @valid_for = Time.now
       as_json
+    end
+
+    def modes
+      return @modes if @modes
+
+      @modes = {}
+      user_ctrl.xpath("//op[@id='Mode']/i").each do |mode|
+        m = translate_mode(mode)
+        @modes[m[:id]] = m[:value]
+      end
+      @modes
+    end
+
+    def user_modes
+      return @user_modes if @user_modes
+
+      @user_modes = {}
+      user_ctrl.xpath("//op[@id='ModeText']/i").each do |mode|
+        m = translate_mode(mode)
+        @user_modes[m[:id]] = m[:value]
+      end
+      @user_modes
+    end
+
+    # User defined texts in RD5 unit
+    # @return [Hash]
+    def user_texts
+      return @user_texts if @user_texts
+
+      response = rd5_request(params_comm_unit.merge(_t: "config/texts.xml"))
+      xml = Nokogiri::XML response.body
+      @user_texts = xml.xpath("//i").map do |node|
+        value = node.attributes["value"].value
+        id = node.attributes["id"].value
+        [id, value.gsub(/%u([\dA-Z]{4})/) { |i| +'' << i[$1].to_i(16) }]
+      end.to_h
     end
 
     private
@@ -159,7 +167,7 @@ module AtreaControl
     # 				values[key]=values[key]-params[key].offset;
     # 			if(params[key] && params[key].coef)
     # 				values[key]=values[key]/params[key].coef;
-    def parse_response(response)
+    def parse_values(response)
       xml = Nokogiri::XML response.body
       sensors_values = @sensors.transform_values do |id|
         value = xml.xpath("//O[@I=\"#{id}\"]/@V").last&.value.to_i
@@ -176,14 +184,14 @@ module AtreaControl
     def refresh_data(values)
       @outdoor_temperature = values[:outdoor_temperature].to_f / 10.0
       @current_power = values[:current_power].to_f
-      @current_mode = mode_map[values[:current_mode]]
+      @current_mode = if values[:current_mode_switch].positive?
+                        user_modes[values[:current_mode_switch].to_s]
+                      else
+                        modes[values[:current_mode].to_s]
+                      end
+      # @current_mode = mode_map[values[:current_mode_name] > 0 ? values[:current_mode_name] : values[:current_mode]]
 
       as_json
-    end
-
-    # ? I10204 ?
-    def mode_map
-      { 0 => "Vypnuto", 1 => "Automat", 2 => "Větrání", 6 => "Rozvážení" }
     end
 
     def logger
@@ -207,14 +215,30 @@ module AtreaControl
 
     # @return [RestClient::Response]
     def response_comm_unit
-      params = {
+      rd5_request(params_comm_unit.merge(_t: "config/xml.xml"))
+    end
+
+    def rd5_request(params)
+      RestClient.get "https://control.atrea.eu/comm/sw/unit.php", { Cookie: "autoLogin=#{autologin_token}", params: params }
+    end
+
+    def user_ctrl
+      response = rd5_request(params_comm_unit.merge(_t: "lang/userCtrl.xml"))
+      xml = Nokogiri::XML response.body
+    end
+
+    def autologin_token
+      @autologin_token ||= CGI.escape([@login, @password].join("\b"))
+    end
+
+    # @note `ver` is done by atrea server
+    def params_comm_unit
+      {
         _user: user_id.to_i,
         _unit: unit_id,
         auth: auth_token || "null",
-        _t: "config/xml.xml",
+        ver: "003001009",
       }
-      autologin_token = CGI.escape([@login, @password].join("\b"))
-      RestClient.get "https://control.atrea.eu/comm/sw/unit.php", { Cookie: "autoLogin=#{autologin_token}", params: params }
     end
 
     # Update tokens based on current state
@@ -222,6 +246,32 @@ module AtreaControl
       @user_id = driver.execute_script("return window._user")
       @unit_id = driver.execute_script("return window._unit")
       @auth_token = user&.[]("auth")
+    end
+
+    # @param [Nokogiri::XML::Element] mode
+    # @return [Hash{Symbol->String}]
+    def translate_mode(mode)
+      id = mode.attributes["id"].value
+      title = mode.attributes["title"].value
+      title = if title.start_with?("$")
+                I18n.t(title[/\w+/])
+              else
+                user_texts[title]
+              end
+      { id: id, value: title }
+    end
+
+    # Re-generate copy of locale files
+    # @note internal use only
+    def update_locales_files!
+      { cs: "0", de: "1", en: "2" }.each do |name, atrea_id|
+        response = rd5_request(params_comm_unit.merge(_t: "lang/texts_#{atrea_id}.xml", auth: nil))
+
+        xml = Nokogiri::XML response.body
+        locale = eval xml.xpath("//words/text()")[0].text
+        yaml = { name.to_s => JSON.parse(locale.to_json) }.to_yaml
+        File.write(File.expand_path("../../config/locales/#{name}.yml", __dir__), yaml)
+      end
     end
 
   end

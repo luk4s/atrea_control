@@ -1,0 +1,269 @@
+---
+de:
+  mainTitle: Ihr Spezialist für Lüftung mit Wärmerückgewinnung
+  save: Speichern
+  cancel: Abbrechen
+  copy: Kopieren
+  refresh: Überschreiben
+  change: Übernehmen
+  pleaseWait: Bitte warten
+  backToHome: Zurück zur Startseite
+  mainPage: Startseite
+  serviceMenu: Service Menü
+  activeFrom: Aktiv
+  hours: Analog
+  minutes: Minuten
+  record: Eintrag
+  allowed: Ermöglicht
+  netSetup: Netzeinstellungen
+  getFromDHCP: DHCP Einstellung
+  useNextValues: Folgende Einstellungen verwenden
+  addressIP: IP Addresse
+  subnetMask: Subnet Maske
+  defaultGW: Gateway
+  serverDNS: DNS Server
+  FTPsetup: FTP Server Passwort
+  passwordOld: 'Original Passwort '
+  passwordNew: Neues Passwort
+  passwordConfirm: Password bestätigen
+  airCond: Lüftungsgerät
+  airCondSetup: Geräte Einstellungen
+  temperature: Temperatur
+  tempSetup: Temperatur Einstellungen
+  notInDemo: Demoversion wird nicht unterstützt
+  thisTimeExist: Zeitvorgabe existiert bereits
+  serviceSetup: Service Einstellungen
+  activeAlarms: Aktive Alarme
+  alarmHistory: Alarm Historie
+  unitStarted: Anlauf
+  active: Aktiv
+  noAlarmDefined: Kein Alarm definiert
+  noAlarmDetected: Keine aktiven Alarme
+  values: Wert
+  parameters: Parameter
+  badInput: Falsche Eingabe
+  allowedRange: Erforderlicher Bereich
+  start: Start
+  stop: Stop
+  text: Text
+  digiVer: DIGI Module Version
+  rdVer: RD Module Version
+  unitAddress: Geräte Adresse
+  currentMode: Aktueller Modus
+  damageWarning: Achtung! Bei falscher Einstellung dieser Parameter, besteht die Möglichkeit,
+    dass das Gerät nicht richtig arbeitet. Für Schäden, die durch falsche Einstellung
+    entstehen, übernimmt der Hersteller keine Haftung!
+  parameter: Parameter
+  value: Wert
+  minimum: Minimum
+  maximum: Maximal
+  defValue: Standard Wert
+  warning: Warnung
+  error: Eingeben
+  accessPrompt: Geben Sie bitte den Service-Code ein
+  accessDenied: Zugriff verweigert, falscher Code
+  swVer: Software Version
+  orderNum: Produktionsnummer
+  userSetup: Benutzereinstellungen
+  switchman: Manuell
+  valueOutOfRange: Der Wert liegt außerhalb des Bereichs
+  fwStep1: Schritt 1 - Speichern der Parameter
+  fwStep2: Schritt 2 - Firmware Update
+  fwSTep3: Schritt 3 - Aktualisierung
+  saveSettings: Speichern der Parameter
+  updateIt: Updaten
+  restoreSettings: Wiederherstellen der Parameter
+  parsNotSaved: Parameter wurden nicht gespeichert
+  errLengthCoo: Fehler! - Bitte verwenden Sie einen anderen Browser
+  parsSaved: Parameter wurden gespeichert
+  updateInProcess: Update, bitte warten...
+  updateNoFile: Datei wurde nicht gefunden...
+  updateSucess: Update war erfolgreich!
+  updateError: Störung - Update
+  manControlOn: Manuelle Eingabe aktiv!
+  manControlOff: Manuelle Eingabe deaktiviert
+  notConnected: Nicht angeschlossen
+  PgFW_FS1: Backup Einstellungen wiederherstellen
+  PgFW_S1: Backup Serviceeinstellungen
+  PgFW_SB1: Backup
+  PgFW_S2: Serviceeinstellungen wiederherstellen
+  PgFW_SB2: Überschreiben
+  PgFW_S3: Werkseinstellungen wiederherstellen
+  PgFW_SB3: Überschreiben
+  PgFW_FS2: Update
+  PgFW_U2: Download Update Anwendungen
+  PgFW_UB1: Öffnen
+  PgFW_SB1c: Möchten Sie wirklich ein Backup der Serviceeinstellungen durchführen?
+  PgFW_SB2c: Möchten Sie wirklich die Serviceeinstellung wiederherstellen?
+  PgFW_SB3c: Möchten Sie wirklich die Standardeinstellungen wiederherstellen?
+  fwUnit: Vorhandene FW
+  fwAvail: Verfügbare FW
+  restInProgress: Parameter werden wiederhergestellt
+  restart: Neustart
+  activate: Aktivieren
+  deactivate: Deaktivieren
+  badTimeZone: Falsche Zeitzone
+  badTime: Falsche Zeiteinstellung
+  setByPC: Einstellen nach PC
+  msgFindAddr: Geben Sie eine neue Geräteadresse ein
+  dtFilterChange: Nächst. Filterwechsel
+  confirmFilter: Filter gewechselt
+  confFilterQuest: Wurden die Filter gewechselt?
+  'off': Aus
+  'on': Ein
+  dayOfWeek: Wochentag
+  monday: Montag
+  tuesday: Dienstag
+  wednesday: Mittwoch
+  thursday: Donnerstag
+  friday: Freitag
+  saturday: Samstag
+  sunday: Sonntag
+  medium: Mittlerer
+  night: Nacht
+  day: Tag
+  power: Luftleistung
+  automatic: Wochenprogramm
+  manual: Manuell
+  temporary: Vorübergehend
+  non: Keine
+  mode: Betriebsmodus
+  perVentilation: Periodische Lüftung
+  ventilation: Lüftung
+  circulation: Umluft
+  startUp: Anlauf
+  runDown: Auslauf
+  defrosting: Enteisung
+  external: Extern
+  inactive: Aus
+  zone: Lüftungszone
+  heating: Heizsaison
+  nonHeating: Nichtheizsaison
+  dateTime: Datum/Uhrzeit
+  filterChange: Filtertausch
+  notWhenAuto: Wenn die Temperatursteuerung im Automatik Modus läuft, ist dei momentane
+    Einstellung nur bis zum nächsten Wochenprogramm Intervall gültig.
+  heatingSched: Wochenprogramm - Heizsaison
+  nonHeatingSched: Wochenprogramm - Nichtheizsaison
+  userSetting: Benutzereinstellungen
+  season: Saison
+  modeAC: Lüftungsmodus
+  modeTemp: Temperaturmodus
+  controlSetting: Regelungsparameter
+  tempSenzorDev: Korrektur Raumtemperatur Sensor
+  inputBlock: Blockierung IN1/IN2
+  personsCount: Anzahl der Personen
+  thermostatFcn: Funktion Temperaturwächter
+  holidayParty: Urlaub / Party
+  texts: Bezeichnungen
+  txtZone1: Zone 1
+  txtZone2: Zone 2
+  txtZone12: Zone 1 2
+  swInfo: Software Information
+  alarms: Alarme
+  controlAC: Lüftungsregelung
+  controlTemp: Temperaturregelung
+  currentPower: Aktuelle Leistung
+  requiredPower: Ausgewählte Leistung
+  requiredTemp: Ausgewählte Temperatur
+  requiredMode: Ausgewählter Modus
+  indoorTemp: Raumtemperatur
+  inletTemp: Zulufttemperatur
+  czech: Tschechisch
+  german: Deutsch
+  english: Englisch
+  eqVent: Konstant Volumenstrom Modus
+  ventCirc: Lüftung mit Zirkulation
+  circDepend: Zirkulations intervall
+  overPrVent: Überdruck Lüftung
+  devHeating: Korrektur Abweichung Heizung
+  devCooling: Korrektur Abweichung Kühlung
+  devCoolMax: Maximale Temperaturabweichung für maximale Kühlung
+  productNumber: Produktionsnummer
+  unitType: Gerätetyp
+  polish: Polnisch
+  bySens: Automatik
+  hpDefrosting: Enteisung Nachheizregister PWW
+  userLogin: Benutzeranmeldung
+  passwordInput: Passwort eingeben
+  loginCmd: einloggen
+  weeklyProgram: Wochenprogramm
+  italiano: Italienisch
+  nightBefCool: Nachtkühlung
+  passwordMenu: Ändern des Passworts
+  enterAllFields: Geben Sie alle Daten
+  passwordNoChk: Neues Passwort und Bestätigung stimmen nicht überein!
+  passwordBad: Passwort darf nur aus folgenden Zeichen a-z  or A-Z or 0-9 bestehen!
+  passwordSaved: Passwort wurde gespeichert
+  passwordSaveErr: Passwort wurde  - errornicht gespeichert - Fehler.
+  unavail: nicht verfügbar
+  disabledRange: 'Unzulässige Auswahl '
+  emergMode: Notlauf-Funktion
+  outdoorTemp: Aussen Temperatur
+  currentZone: Aktueller Zone
+  components: Komponenten
+  all: Alles
+  modeAuto: Automatik
+  disbalance: Disbalance
+  saveActive: Speichern / Aktivieren
+  holidays: Feiertag
+  vacations: Ferienzeit
+  unitDesign: Konstruktion
+  unitSpec: Spezifikation
+  partyStart: Start
+  partyEnd: Ende
+  tsNtsSwitch: HS/NHS Schaltung
+  tsNtsTemp: HS/NHS Temperatur
+  in1Block: IN1 Eingang  Deaktivieren
+  in2Block: IN2 Eingang  Deaktivieren
+  hystHeat: Vol. Steigerüng Kühlung
+  hystCool: Vol. Steigerüng Heitzung
+  set: Einstellen
+  timeZone: Zeit Zone
+  settingTZ: Time zone setting
+  producer: Lieferant
+  unitLine: Serie
+  unitSize: Gereatgrosse
+  unitIntDesign: Spezifikationen
+  currentConfig: Aktueller Einstellung
+  monthName1: Januar
+  monthName2: Februar
+  monthName3: März
+  monthName4: April
+  monthName5: Mai
+  monthName6: Juli
+  monthName7: Juli
+  monthName8: August
+  monthName9: September
+  monthName10: Oktober
+  monthName11: November
+  monthName12: Dezember
+  holidayTip: Feiertag/Ferienzeit
+  prodCodeInput: Geben Sie den Lieferanten Code ein...
+  logType: Typ
+  current: Aktuell
+  week: Woche
+  month: Monat
+  selectDay: Wählen Sie einen Tag
+  show: Anzeige
+  dataNotFound: Daten wurden nicht gefunden
+  logLive: Eingeschaltet
+  holidayVacation: Feiertag und Ferienzeit
+  timeAutoSwitch: DST automatisch
+  timeSyncInet: Zeit mit Internet synchronisieren
+  unitTime: Gerätezeit
+  inputs: Eingänge
+  outputs: Ausgänge
+  others: Andere
+  heatIconTip: Heizung aktiviert
+  coolIconTip: Kühlung aktiviert
+  partyIconTip: Modus Party/Urlaub aktiviert
+  alarmIconTip: Aktiver Alarm
+  PgFW_S2A: Letzte Datensicherung
+  reset: Reset
+  commun: Kommunikation
+  serverPing: Funktion "Connect server"
+  acsService: Servicezugang
+  acsDistr: Lieferantenzugang
+  lastCommun: Letzte Kommunikation
+  unitName: Jméno jednotky

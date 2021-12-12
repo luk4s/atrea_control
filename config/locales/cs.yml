@@ -1,0 +1,269 @@
+---
+cs:
+  mainTitle: Váš specialista na rekuperaci tepla a ekonomii vzduchotechnických systémů
+  save: Uložit
+  cancel: Storno
+  copy: Kopírovat
+  refresh: Obnovit
+  change: Změnit
+  pleaseWait: Prosím, čekejte ...
+  backToHome: Návrat na hlavní stranu
+  mainPage: Hlavní strana
+  serviceMenu: Servisní menu
+  activeFrom: Aktivní od
+  hours: Hodiny
+  minutes: Minuty
+  record: Záznam
+  allowed: Povoleno
+  netSetup: Nastavení sítě
+  getFromDHCP: Načíst hodnoty ze serveru DHCP
+  useNextValues: Použít následující hodnoty
+  addressIP: IP adresa
+  subnetMask: Maska podsítě
+  defaultGW: Výchozí brána
+  serverDNS: DNS server
+  FTPsetup: Nastavení hesla FTP serveru
+  passwordOld: Původní heslo
+  passwordNew: Nové heslo
+  passwordConfirm: Potvrzení nového hesla
+  airCond: Vzduchotechnika
+  airCondSetup: Nastavení vzduchotechniky
+  temperature: Teplota
+  tempSetup: Nastavení teploty
+  notInDemo: V demo verzi není podporováno
+  thisTimeExist: Zadaný čas již existuje
+  serviceSetup: Servisní nastavení
+  activeAlarms: Aktivní alarmy
+  alarmHistory: Historie alarmů
+  unitStarted: Start jednotky
+  active: Aktivní
+  noAlarmDefined: Není definován žádný alarm
+  noAlarmDetected: Není detekován žádný alarm
+  values: Hodnoty
+  parameters: Parametry
+  badInput: Chybné zadání
+  allowedRange: Povolený rozsah
+  start: Start
+  stop: Stop
+  text: Text
+  digiVer: Verze DIGI modulu
+  rdVer: Verze RD modulu
+  unitAddress: Adresa jednotky
+  currentMode: Aktuální mód provozu
+  damageWarning: Pozor nastavením těchto parametrů lze způsobit neadekvátní reakci
+    větrací jednotky, což může zapříčinit její poruchu či poškození. Za neuvážené
+    změny v nastavení výstupů nenese výrobce zařízení žádnou zodpovědnost!
+  parameter: Parametr
+  value: Hodnota
+  minimum: Minimum
+  maximum: Maximum
+  defValue: Výchozí hodnota
+  warning: Varování
+  error: Nastav
+  accessPrompt: Kontrola přístupu, zadejte přístupový kód
+  accessDenied: Přístup odepřen, chybný kód nebo příliš mnoho přihlášených!
+  swVer: Verze software
+  orderNum: Číslo zakázky
+  userSetup: Uživatelské nastavení
+  switchman: Manuál
+  valueOutOfRange: Hodnota leží mimo rozsah
+  fwStep1: Krok 1. - Uložení nastavení
+  fwStep2: Krok 2. - Update firmware
+  fwSTep3: Krok 3. - Obnova nastavení
+  saveSettings: Uložit nastavení
+  updateIt: Provést update
+  restoreSettings: Obnovit nastavení
+  parsNotSaved: Parametry nebyly dosud uloženy
+  errLengthCoo: Chyba dat, použijte jiný prohlížeč
+  parsSaved: Parametry uloženy
+  updateInProcess: Probíhá update, prosím čekejte
+  updateNoFile: Nebyl nalezen žádný soubor pro update
+  updateSucess: UPDATE dokončen
+  updateError: Chyba při updatu
+  manControlOn: Ruční řízení povoleno
+  manControlOff: Ruční řízení neaktivní
+  notConnected: Nepřipojeno
+  PgFW_FS1: Obnova/Záloha nastavení
+  PgFW_S1: Provedení zálohy servisního nastavení
+  PgFW_SB1: Zálohovat
+  PgFW_S2: Obnova servisního nastavení ze zálohy
+  PgFW_SB2: Obnovit
+  PgFW_S3: Obnova nastavení do výrobních hodnot
+  PgFW_SB3: Obnovit
+  PgFW_FS2: Update
+  PgFW_U2: Stažení aplikace pro update
+  PgFW_UB1: Otevřít
+  PgFW_SB1c: 'Přejete si vytvořit zálohu servisního nastavení? '
+  PgFW_SB2c: Opravdu si přejete obnovit servisní nastavení ze zálohy?
+  PgFW_SB3c: Opravdu si přejete obnovit výrobní nastavení?
+  fwUnit: FW Jednotky
+  fwAvail: Dostupný FW
+  restInProgress: Probíhá obnova nastavení
+  restart: Restart
+  activate: Aktivovat
+  deactivate: Deaktivovat
+  badTimeZone: Nesprávné časové pásmo
+  badTime: Nesprávné nastavení času
+  setByPC: Nastavit podle PC
+  msgFindAddr: Zadejte novou adresu jednotky.
+  dtFilterChange: Datum výměny filtru
+  confirmFilter: Potvrdit výměnu
+  confFilterQuest: Opravdu byl filtr vyměněn?
+  'off': Vypnuto
+  'on': Zapnuto
+  dayOfWeek: Den v týdnu
+  monday: Pondělí
+  tuesday: Úterý
+  wednesday: Středa
+  thursday: Čtvrtek
+  friday: Pátek
+  saturday: Sobota
+  sunday: Neděle
+  medium: Střední
+  night: Noc
+  day: Den
+  power: Výkon
+  automatic: Týdenní program
+  manual: Ruční
+  temporary: Dočasné
+  non: Není
+  mode: Režim
+  perVentilation: Periodické větrání
+  ventilation: Větrání
+  circulation: Cirkulace
+  startUp: Náběh
+  runDown: Doběh
+  defrosting: Odtávání rekuperátoru
+  external: Externě
+  inactive: Vypnuto
+  zone: Zóna
+  heating: Topná
+  nonHeating: Netopná
+  dateTime: Datum a čas
+  filterChange: Výměna filtru
+  notWhenAuto: Řízení teploty je nastaveno na automatiku, změna je platná pouze do
+    příští změny režimu.
+  heatingSched: Rozvrh topná sezóna
+  nonHeatingSched: Rozvrh netopná sezóna
+  userSetting: Uživatelské nastavení
+  season: Sezóna
+  modeAC: Režim VZT
+  modeTemp: Režim teploty
+  controlSetting: Nastavení regulace
+  tempSenzorDev: Korekce čidla teploty ovladače
+  inputBlock: Blokování vstupu
+  personsCount: Počet osob
+  thermostatFcn: Funkce termostatu
+  holidayParty: Dovolená / párty
+  texts: Texty
+  txtZone1: Text pro zónu 1
+  txtZone2: Text pro zónu 2
+  txtZone12: Text pro zónu 1 2
+  swInfo: Informace o SW
+  alarms: Alarmy
+  controlAC: Řízení VZT
+  controlTemp: Řízení teploty
+  currentPower: Aktuální výkon
+  requiredPower: Požadovaný výkon
+  requiredTemp: Požadovaná teplota
+  requiredMode: Požadovaný režim
+  indoorTemp: Vnitřní teplota
+  inletTemp: Teplota přívodu
+  czech: Česky
+  german: Německy
+  english: Anglicky
+  eqVent: Rovnotlaké větrání
+  ventCirc: Větrání s cirkulací
+  circDepend: Cirkulace závislá
+  overPrVent: Přetlakové větrání
+  devHeating: Odchylka pro topení
+  devCooling: Odchylka pro chlazení
+  devCoolMax: Odchylka pro chlazení na max.
+  productNumber: Výrobní číslo
+  unitType: Typ jednotky
+  polish: Polsky
+  bySens: Auto - větrání
+  hpDefrosting: Odmražení TČ
+  userLogin: Přihlášení uživatele
+  passwordInput: Zadejte heslo
+  loginCmd: Přihlásit
+  weeklyProgram: Týdenní program
+  italiano: Italsky
+  nightBefCool: Noční předchlazení
+  passwordMenu: Změna hesla
+  enterAllFields: Zadejte všechny údaje!
+  passwordNoChk: Nové heslo a jeho potvrzeni se neshoduje!
+  passwordBad: Heslo může obsahovat pouze znaky a-z, A-Z a číslice!
+  passwordSaved: Heslo bylo uloženo.
+  passwordSaveErr: Chyba při ukládání hesla.
+  unavail: Nedostupná
+  disabledRange: Nepovolený rozsah
+  emergMode: Nouzový režim
+  outdoorTemp: Venkovní teplota
+  currentZone: Aktuální zóna
+  components: Komponenty
+  all: Vše
+  modeAuto: Automat
+  disbalance: Rozvážení
+  saveActive: Uložit / Aktivovat
+  holidays: Svátky
+  vacations: Prázdniny
+  unitDesign: Provedení
+  unitSpec: Specifikace
+  partyStart: Spustit v
+  partyEnd: Ukončit v
+  tsNtsSwitch: Přepnutí TS/NTS
+  tsNtsTemp: Teplota TS/NTS
+  in1Block: Blokace cidla IN1
+  in2Block: Blokace cidla IN2
+  hystHeat: Hystereze topení
+  hystCool: Hystereze chlazení
+  set: Nastavit
+  timeZone: Časové pásmo
+  settingTZ: Nastavení časového pásma
+  producer: Výrobce
+  unitLine: Řada
+  unitSize: Velikost jednotky
+  unitIntDesign: Vnitřní uspořádání
+  currentConfig: Aktuální nastavení
+  monthName1: Leden
+  monthName2: Únor
+  monthName3: Březen
+  monthName4: Duben
+  monthName5: Květen
+  monthName6: Červen
+  monthName7: Červenec
+  monthName8: Srpen
+  monthName9: Září
+  monthName10: Říjen
+  monthName11: Listopad
+  monthName12: Prosinec
+  holidayTip: Svátek / Prázdniny
+  prodCodeInput: Zadejte kód výrobce
+  logType: Typ logu
+  current: Aktuální
+  week: Týden
+  month: Měsíc
+  selectDay: Vyberte den
+  show: Zobrazit
+  dataNotFound: Data nenalezena
+  logLive: On-line
+  holidayVacation: Svátky a prázdniny
+  timeAutoSwitch: Automatické přepnutí na letní čas
+  timeSyncInet: Synchronizace času s Internetem
+  unitTime: Čas jednotky
+  inputs: Vstupy
+  outputs: Výstupy
+  others: Ostatní
+  heatIconTip: Aktivní topení
+  coolIconTip: Aktivní chlazení
+  partyIconTip: Aktivní režim Párty/Dovolená
+  alarmIconTip: Aktivní alarm
+  PgFW_S2A: Záloha z
+  reset: Reset
+  commun: Komunikace
+  serverPing: Služba "Connect server"
+  acsService: Přístup servisu
+  acsDistr: Přístup distributora
+  lastCommun: Poslední komunikace
+  unitName: Jméno jednotky

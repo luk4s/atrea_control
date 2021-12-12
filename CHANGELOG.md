@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [1.4.0] - 2021-12-12
+### Changed
+- founded way to get config and data from Atrea server
+
 ## [1.3.1] - 2021-12-11
 ### Changed
 - version of selenium

@@ -1,0 +1,269 @@
+---
+en:
+  mainTitle: Your specialist for heat recovery and air-handling system economy
+  save: Save
+  cancel: Cancel
+  copy: Copy
+  refresh: Restore
+  change: Change
+  pleaseWait: Wait, please...
+  backToHome: Back to main page
+  mainPage: Main page
+  serviceMenu: Service menu
+  activeFrom: Active from
+  hours: Analog
+  minutes: Minutes
+  record: Record
+  allowed: Allowed
+  netSetup: Network setting
+  getFromDHCP: DHCP parameters setting
+  useNextValues: Use the following setting
+  addressIP: IP address
+  subnetMask: Net mask
+  defaultGW: Gateway
+  serverDNS: DNS server
+  FTPsetup: FTP server password
+  passwordOld: 'Original password '
+  passwordNew: 'New password '
+  passwordConfirm: Password confirmation
+  airCond: Air handling unit
+  airCondSetup: HVAC unit configuration
+  temperature: Temperature
+  tempSetup: Temperature setting
+  notInDemo: Demo version does not support
+  thisTimeExist: Set time already exists
+  serviceSetup: Service setting
+  activeAlarms: Active alarms
+  alarmHistory: Alarm history
+  unitStarted: Unit start
+  active: Active
+  noAlarmDefined: No alarm defined
+  noAlarmDetected: No alarm is active
+  values: Values
+  parameters: Parameters
+  badInput: Wrong value inserted
+  allowedRange: Required values range
+  start: Start
+  stop: Stop
+  text: Text
+  digiVer: DIGI module version
+  rdVer: RD module version
+  unitAddress: Address of unit
+  currentMode: Current mode
+  damageWarning: 'Attention! When setting following parameters, be carefull about
+    the set values, inadequate setting may cause malfunction of the Unit. The appliance
+    producer is not responsible in any case of harm! '
+  parameter: Parameter
+  value: Value
+  minimum: Minimum
+  maximum: Max
+  defValue: Default
+  warning: Warning
+  error: Set
+  accessPrompt: Access check, enter the service code!
+  accessDenied: Access denied, wrong code!
+  swVer: Software version
+  orderNum: Production number
+  userSetup: User setting
+  switchman: Manual
+  valueOutOfRange: Value exceeded the range
+  fwStep1: Step 1 - Save parameters
+  fwStep2: Step 2 - Firmware update
+  fwSTep3: Step 3 - Parameters refresh
+  saveSettings: Save parameters
+  updateIt: Make update
+  restoreSettings: Refresh parameters
+  parsNotSaved: No parameters has been saved till now
+  errLengthCoo: Data error, use different browser
+  parsSaved: Parameters have been saved
+  updateInProcess: The update is in progress, wait please.
+  updateNoFile: No file for update has been found
+  updateSucess: UPDATE finished
+  updateError: Update error
+  manControlOn: Manual control enabled
+  manControlOff: Manual control disabled
+  notConnected: Not connected
+  PgFW_FS1: Restore/back-up setting
+  PgFW_S1: The backup of the service setting
+  PgFW_SB1: Back-up
+  PgFW_S2: Service setting restore from back-up
+  PgFW_SB2: Restore
+  PgFW_S3: 'Restore to production setting '
+  PgFW_SB3: Restore
+  PgFW_FS2: Update
+  PgFW_U2: Download of the update application
+  PgFW_UB1: Open
+  PgFW_SB1c: Do you wish to make a back-up of the service setting?
+  PgFW_SB2c: 'Are you sure to restore service setting from the back-up file? '
+  PgFW_SB3c: Are you sure to restore the default setting?
+  fwUnit: Current fw ver.
+  fwAvail: Available fw ver.
+  restInProgress: Setting restore is in the progress
+  restart: Restart
+  activate: Activate
+  deactivate: Deactivate
+  badTimeZone: Wrong time zone
+  badTime: Wrong time setting
+  setByPC: Set according to the PC
+  msgFindAddr: Enter a new unit address.
+  dtFilterChange: Next filter change
+  confirmFilter: Confirm the change
+  confFilterQuest: Are you sure the filter has been changed?
+  'off': 'Off'
+  'on': 'On'
+  dayOfWeek: Day of week
+  monday: Monday
+  tuesday: Tuesday
+  wednesday: Wednesday
+  thursday: Thursday
+  friday: Friday
+  saturday: Saturday
+  sunday: Sunday
+  medium: Medium
+  night: Night
+  day: Day
+  power: Power
+  automatic: Schedule
+  manual: Manual
+  temporary: Temporary
+  non: Non
+  mode: Mode
+  perVentilation: Period. ventilation
+  ventilation: Ventilation
+  circulation: Circulation
+  startUp: Start-up
+  runDown: Run-out
+  defrosting: Defrosting
+  external: External
+  inactive: 'Off'
+  zone: Zone
+  heating: Heating
+  nonHeating: Non-heating
+  dateTime: 'Time and date '
+  filterChange: Filter change
+  notWhenAuto: Temperature control set to the Automatic mode, the current setting
+    is valid till the next week interval is active.
+  heatingSched: Heating season schedule
+  nonHeatingSched: Non-heating season schedule
+  userSetting: User setting
+  season: Season
+  modeAC: Mode air-handling
+  modeTemp: Temperature mode
+  controlSetting: Control procesor setting
+  tempSenzorDev: Temperature sensor correction - CP
+  inputBlock: IN Blocking
+  personsCount: Number of persons
+  thermostatFcn: Thermostat function
+  holidayParty: Holiday / party
+  texts: Texts
+  txtZone1: Text for zone 1
+  txtZone2: Text for zone 2
+  txtZone12: Text for zone 1 and 2
+  swInfo: About the control
+  alarms: Alarms
+  controlAC: Air-handling control
+  controlTemp: Temperature control
+  currentPower: Actual Power
+  requiredPower: Requested power
+  requiredTemp: Requested temperature
+  requiredMode: Requested mode
+  indoorTemp: Inner temperature
+  inletTemp: Supply air temperature
+  czech: Czech
+  german: German
+  english: English
+  eqVent: Equal volume flow
+  ventCirc: Ventilat. circulation
+  circDepend: Interval circulation
+  overPrVent: Overpressure
+  devHeating: Temperature hysteresis - heating
+  devCooling: Temperature hysteresis - cooling
+  devCoolMax: Max. temperature drop - max. cooling
+  productNumber: Production number
+  unitType: Unit type
+  polish: Polish
+  bySens: Auto - ventilation
+  hpDefrosting: HP defrosting
+  userLogin: User login
+  passwordInput: Enter the password
+  loginCmd: Login
+  weeklyProgram: Schedule
+  italiano: Italian
+  nightBefCool: Night precooling
+  passwordMenu: Password change
+  enterAllFields: Fill all the data
+  passwordNoChk: A new password and the confirmation does not match!
+  passwordBad: The password may only consist of figures a-z  or A-Z or 0-9!
+  passwordSaved: The password has been saved
+  passwordSaveErr: Password was not saved - error.
+  unavail: Unavailable
+  disabledRange: Range is exceeded
+  emergMode: Emergency mode
+  outdoorTemp: Outdoor temperature
+  currentZone: Actual zone
+  components: Components
+  all: All
+  modeAuto: Automat
+  disbalance: Disbalance
+  saveActive: Save / Activate
+  holidays: Bank Holidays
+  vacations: Vacations
+  unitDesign: Design
+  unitSpec: Specification
+  partyStart: Starts at...
+  partyEnd: Expires at...
+  tsNtsSwitch: HS/NHS switching
+  tsNtsTemp: HS/NHS switch temp.
+  in1Block: IN1 input blocking
+  in2Block: IN2 input blocking
+  hystHeat: Hysteresis - heating
+  hystCool: Hysteresis - cooling
+  set: Set new
+  timeZone: Time zone
+  settingTZ: Time zone setting
+  producer: Supplier
+  unitLine: Line
+  unitSize: Unit size
+  unitIntDesign: Specification
+  currentConfig: Current setting
+  monthName1: January
+  monthName2: Fabruery
+  monthName3: March
+  monthName4: April
+  monthName5: May
+  monthName6: June
+  monthName7: July
+  monthName8: August
+  monthName9: September
+  monthName10: October
+  monthName11: November
+  monthName12: December
+  holidayTip: Bank holid./Vacation
+  prodCodeInput: Enter the supplier code...
+  logType: Log typ
+  current: Current
+  week: Week
+  month: Month
+  selectDay: Choose the week day
+  show: Show...
+  dataNotFound: Data are not found
+  logLive: On-line
+  holidayVacation: Bank holidays, Vacation
+  timeAutoSwitch: DST automaticaly
+  timeSyncInet: Internet time synchronisation
+  unitTime: Unit time
+  inputs: Inputs
+  outputs: Outputs
+  others: Others
+  heatIconTip: 'Heating activated '
+  coolIconTip: Cooling activated
+  partyIconTip: Party/Holiday mode activated
+  alarmIconTip: Activ alarm
+  PgFW_S2A: Last backup
+  reset: Reset
+  commun: Communication
+  serverPing: '"Connect server" service'
+  acsService: Service access
+  acsDistr: Distributor access
+  lastCommun: Last communication
+  unitName: Jméno jednotky

@@ -29,6 +29,9 @@ RSpec.describe AtreaControl::Duplex do
 
   describe "#open_dashboard" do
     it "grab object data" do
+      fixture = File.join(__dir__, "../fixtures/files/texts.xml")
+      stub_request(:get,
+                   %r{https://control.atrea.eu/comm/sw/unit.php}).to_return(body: File.read(fixture))
       duplex.driver.get "file://#{File.join(__dir__, "../fixtures/files/logged.html")}"
       expect { duplex.open_dashboard }.to change(duplex, :logged?)
     end
@@ -39,10 +42,6 @@ RSpec.describe AtreaControl::Duplex do
       duplex.instance_variable_set :@logged, true
       duplex.driver.get "file://#{File.join(__dir__, "../fixtures/files/dashboard.html")}"
       duplex.send(:refresh!)
-    end
-
-    describe "#name" do
-      it { expect(duplex.name).to eq "My Home" }
     end
 
     describe "#unit_id" do
@@ -56,10 +55,6 @@ RSpec.describe AtreaControl::Duplex do
     # describe "#current_power" do
     #   it { expect(duplex.current_power).to eq 86.0 }
     # end
-
-    describe "#current_mode_name" do
-      it { expect(duplex.current_mode_name).to eq "ovladač" }
-    end
 
     describe "#call_unit!" do
       it "stub xml" do

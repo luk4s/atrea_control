@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<comm debug="0" demo="0"/>
+<params>
+<!-- access: první znak přístup pro čtení, druhý pro zápis
+			0=uzivatel, 1=servisák, 2=výrobce
+		type: 0=text, 1=Int číslo
+		options: zatím není využito
+		aTEMPCONTROL H11017
+		aVZTCONTROL  H11015
+		!cfgTEMP		 H11006
+		aTEMP			H11006			 
+		aCORETEMP	i00210
+		aTEMPOUT		I00202
+		
+		UNparSeas C01200
+		UNparVZTMode	H11015
+		UNparTempMode	H11017
+		UNparBodyCnt	H11201
+		UNcorrD			H11205
+-->
+	<i id="H10508" rw="0" access="00" type="1" length="2"/>
+  <i id="H11001" rw="0" access="00" type="1" length="3" options="Power"/>
+<!--  	<i id="H11001" rw="0" access="00" type="1" length="2" options="Power"/>-->
+	<i id="H11005" rw="0" access="00" type="1" length="2" options="Power"/>
+	<i id="H11009" rw="1" access="00" type="1" length="2" options="Power"/>
+	<i id="H11020" rw="1" access="00" type="1" length="2" options="Power"/>
+	<i id="H11012" rw="1" access="00" type="1" length="2" options="Power"/>
+	<i id="H11015" rw="1" access="00" type="1" length="1" options="AutoManTemp"/>
+	<i id="H11016" rw="1" access="00" type="1" length="1" options="AutoManTemp"/>
+	<i id="H11017" rw="1" access="00" type="1" length="1" options="AutoManTemp"/>
+	<i id="H11006" rw="1" access="00" type="1" length="1" options="Temp" coef="2"/>
+	<i id="H11010" rw="1" access="00" type="1" length="1" options="Temp" coef="2"/>
+	<i id="H11021" rw="1" access="00" type="1" length="1" options="Temp" coef="2"/>
+	<i id="H11000" rw="1" access="00" type="1" length="1" options="Mode"/>
+	<i id="H11004" rw="0" access="00" type="1" length="1" options="Mode"/>
+	<i id="H11008" rw="1" access="00" type="1" length="1" options="Mode"/>
+	<i id="H11019" rw="1" access="00" type="1" length="1" options="Mode"/>
+	<i id="H11011" rw="1" access="00" type="1" length="1" options="Zone"/>
+
+<!--	<i id="H11100" rw="1" access="00" type="1" length="1" options="Mode"/>
+	<i id="H11101" rw="1" access="00" type="1" length="2" options="Power_percent"/>
+	<i id="H11102" rw="1" access="00" type="1" length="1" options="Temp" coef="2"/>
+	<i id="H11103" rw="1" access="00" type="1" length="1" options="Zone"/>
+-->
+	<i id="H10800" rw="1" access="00" type="1" length="1" options="Mode"/>
+	<i id="H10801" rw="1" access="00" type="1" length="2" options="Power"/>
+	<i id="H10802" rw="1" access="00" type="1" length="1" options="Temp100"/>
+	<i id="H10803" rw="1" access="00" type="1" length="1" options="Zone"/>
+	<i id="H10804" rw="1" access="00" type="1" length="1" options="Year"/>
+	<i id="H10805" rw="1" access="00" type="1" length="1" options="Month" offset="1"/>
+	<i id="H10806" rw="1" access="00" type="1" length="1" options="Day"/>
+	<i id="H10807" rw="1" access="00" type="1" length="1" options="Hour"/>
+	<i id="H10808" rw="1" access="00" type="1" length="1" options="Minute"/>
+	<i id="H10809" rw="1" access="00" type="1" length="1" options="Year"/>
+	<i id="H10810" rw="1" access="00" type="1" length="1" options="Month" offset="1"/>
+	<i id="H10811" rw="1" access="00" type="1" length="1" options="Day"/>
+	<i id="H10812" rw="1" access="00" type="1" length="1" options="Hour"/>
+	<i id="H10813" rw="1" access="00" type="1" length="1" options="Minute"/>
+	<i id="H11201" rw="1" access="00" type="1" length="1" options="BodyCount"/>
+	<i id="H11202" rw="1" access="00" type="1" length="2" options="dev01_012" coef="10"/>
+	<i id="H11203" rw="1" access="00" type="1" length="2" options="dev01_012" coef="10"/>
+	<i id="H11318" rw="1" access="00" type="1" length="2" options="dev01_030"/>
+	<i id="H11208" rw="1" access="00" type="1" length="2" options="dev01_030"/>
+	<i id="H11204" rw="1" access="00" type="1" length="2" options="dev1_5" coef="10"/>
+	<i id="H11205" rw="1" access="00" type="1" length="2" options="Corr01" coef="10" offset="30"/>
+	<i id="H11209" rw="1" access="11" type="1" length="1" options="InputBlock"/>
+<!--	<i id="H11208" rw="1" access="11" type="1" length="1" options="dev01_030" coef="10"/>
+	<i id="H11318" rw="1" access="11" type="1" length="1" options="dev01_030" coef="10"/> -->
+
+	<i id="H11401" rw="1" access="11" type="1" length="1" options="SeasonType"/>
+	<i id="H11402" rw="1" access="11" type="1" length="3" options="TempSeason"></i>
+	<i id="C10800" rw="1" access="00" type="1" length="1" options="OnOff"/>
+
+
+	<i id="I10000" rw="1" access="00" type="1" length="4" options="Year"/>
+	<i id="I10200" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+	<i id="I10201" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+	<i id="I10202" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+	<i id="I10203" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+	<i id="I10204" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+	<i id="I10207" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+	<i id="I10210" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+  <i id="I10212" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>
+  <i id="I10208" rw="1" access="00" type="1" length="4" options="Temp" coef="10"/>  
+	<i id="C11200"  	 rw="1" access="00" type="1" length="1" options="SeasonType"/>
+	<i id="D1"  		    rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="D2"  		    rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="D3"  		    rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="D4"  		    rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="Z1Text"  		 rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="Z2Text"  		 rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="Z3Text"  		 rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="UnitName" 		 rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="IN1"  		 rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="IN2"  		 rw="1" access="00" type="0" length="15" options="String"/>
+	<i id="www"  		    rw="0" access="00" type="0" length="100" options="String"/>
+  <i id="ip" rw="1" access="00" type="1" options="IP"/>
+	<i id="mask" rw="1" access="00" type="1" options="IP"/>
+	<i id="gate" rw="1" access="00" type="1" options="IP"/>
+	<i id="dns1" rw="1" access="00" type="1" options="IP"/>
+	<i id="dns" rw="1" access="00" type="1" options="IP"/>
+	<i id="dhcp" rw="1" access="00" type="1" length="1" options="AutoManual"/>
+	<i id="C00900" rw="1" access="00" type="1" length="1" options="OnOff"/>
+	<i id="C10902" rw="1" access="00" type="1" length="1" options="OnOff"/>
+
+	<i id="C11406" rw="1" access="00" type="1" length="1" options="OffEnabled"/>
+	<i id="C11407" rw="1" access="00" type="1" length="1" options="OffEnabled"/>
+
+<i id="D11100" flag="A" access="10" defval="0" alarm="50" options="1"/>
+<i id="D11101" flag="A" access="10" defval="0" alarm="51" options="1"/>
+<i id="D11102" flag="A" access="10" defval="0" alarm="52" options="1"/>
+<i id="D11103" flag="A" access="10" defval="0" alarm="53" options="1"/>
+<i id="D11104" flag="A" access="10" defval="0" alarm="54" options="1"/>
+<i id="D11105" flag="A" access="10" defval="0" alarm="55" options="1"/>
+<i id="D11106" flag="A" access="10" defval="0" alarm="56" options="1"/>
+<i id="D11107" flag="A" access="10" defval="0" alarm="77" options="1"/>
+<i id="D11108" flag="A" access="10" defval="0" alarm="58" options="1"/>
+<i id="D11109" flag="A" access="10" defval="0" alarm="59" options="1"/>
+<i id="D11110" flag="A" access="10" defval="0" alarm="60" options="1"/>
+<i id="D11111" flag="A" access="10" defval="0" alarm="61" options="1"/>
+<i id="D11112" flag="A" access="10" defval="0" alarm="62" options="1"/>
+<i id="D11114" flag="A" access="10" defval="0" alarm="64" options="1"/>
+<i id="D11115" flag="A" access="10" defval="0" alarm="65" options="1"/>
+<i id="D11116" flag="A" access="10" defval="0" alarm="66" options="1"/>
+<i id="D11117" flag="W" access="10" defval="0" alarm="67" options="1"/>
+<i id="D11118" flag="W" access="10" defval="0" alarm="68" options="1"/>
+<i id="D11119" flag="W" access="10" defval="0" alarm="69" options="1"/>
+<i id="D11120" flag="W" access="10" defval="0" alarm="70" options="1"/>
+<i id="D11121" flag="W" access="10" defval="0" alarm="71" options="1"/>
+<i id="D11122" flag="W" access="10" defval="0" alarm="72" options="1"/>
+<i id="D11113" flag="A" access="10" defval="0" alarm="63" options="1"/>
+<i id="D11123" flag="A" access="10" defval="0" alarm="73" options="1"/>
+<i id="D11124" flag="A" access="10" defval="0" alarm="74" options="1"/>
+<i id="D11125" flag="A" access="10" defval="0" alarm="75" options="1"/>
+<i id="D11126" flag="A" access="10" defval="0" alarm="76" options="1"/>
+<i id="D11127" flag="A" access="10" defval="0" alarm="76" options="1"/>
+<i id="D11128" flag="A" access="10" defval="0" alarm="78" options="1"/>
+<i id="D11129" flag="A" access="10" defval="0" alarm="79" options="1"/>
+<i id="D11130" flag="A" access="10" defval="0" alarm="80" options="1"/>
+<i id="D11131" flag="A" access="10" defval="0" alarm="81" options="1"/>
+<i id="D11132" flag="A" access="10" defval="0" alarm="82" options="1"/>
+<i id="D11140" flag="A" access="10" defval="0" alarm="90" options="1"/>
+<i id="D11141" flag="A" access="10" defval="0" alarm="91" options="1"/>
+<i id="D11142" flag="W" access="10" defval="0" alarm="92" options="1"/>
+<i id="D11143" flag="A" access="10" defval="0" alarm="93" options="1"/>
+<i id="D11144" flag="A" access="10" defval="0" alarm="94" options="1"/>
+<!--	<i id="D11400" flag="A" access="10" type="1" length="1" options="1" defval="0" alarm="100"/>-->
+</params>
+<!-- !!! POZOR !!! definice výstupu pro sezóny se nachází u menu v content - atribut target, u jazykových souborů celý content u RTS a RNS smaž, ať se Ti nepřepisuje
+!!! POZOR !!! Pokud je demo, nejsou hodnoty zasílány ani laděny -->
+</root>
