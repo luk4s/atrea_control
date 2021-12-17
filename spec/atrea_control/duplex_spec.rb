@@ -33,7 +33,7 @@ RSpec.describe AtreaControl::Duplex do
       stub_request(:get,
                    %r{https://control.atrea.eu/comm/sw/unit.php}).to_return(body: File.read(fixture))
       duplex.driver.get "file://#{File.join(__dir__, "../fixtures/files/logged.html")}"
-      expect { duplex.open_dashboard }.to change(duplex, :logged?)
+      expect { duplex.open_dashboard }.not_to raise_exception
     end
   end
 

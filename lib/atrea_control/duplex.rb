@@ -9,8 +9,9 @@ module AtreaControl
   # Controller for +control.atrea.eu+
   class Duplex
     CONTROL_URI = "https://control.atrea.eu/"
+    CONTROL_VERSION = "003001009"
 
-    attr_reader :current_mode, :current_power, :outdoor_temperature
+    attr_reader :current_mode, :current_power, :outdoor_temperature, :sensors
     # @return [DateTime] store time of last update
     attr_reader :valid_for
 
@@ -38,22 +39,20 @@ module AtreaControl
       @driver ||= Selenium::WebDriver.for :firefox, capabilities: [options]
     end
 
-    def logged?
-      user&.[] "loged"
+    # Get `sid` token used as session
+    def update_user_auth_token
+      login && refresh! && close
+      auth_token
     end
-
-    def login_in_progress?
-      @login_in_progress
-    end
+    alias update_user_sid update_user_auth_token
 
     # Login into control
     def login
       @login_in_progress = true
       logger.debug "start new login"
-      driver.get CONTROL_URI
-      submit_login_form unless logged?
+      driver.get "#{CONTROL_URI}?action=logout"
+      submit_login_form
       finish_login
-      refresh!
       inspect
     ensure
       @login_in_progress = false
@@ -89,39 +88,6 @@ module AtreaControl
       driver.execute_script("return window.user")
     end
 
-    # quit selenium browser
-    def close
-      driver.quit
-    ensure
-      remove_instance_variable :@driver
-    end
-
-    alias logout! close
-
-    def as_json(_options = nil)
-      {
-        current_mode: current_mode,
-        current_power: current_power,
-        outdoor_temperature: outdoor_temperature,
-        valid_for: valid_for,
-      }
-    end
-
-    alias values as_json
-
-    def to_json(*args)
-      as_json.to_json(*args)
-    end
-
-    def call_unit!
-      return false if @login_in_progress
-
-      logger.debug "call_unit!"
-      parse_values(response_comm_unit)
-      @valid_for = Time.now
-      as_json
-    end
-
     def modes
       return @modes if @modes
 
@@ -149,47 +115,72 @@ module AtreaControl
     def user_texts
       return @user_texts if @user_texts
 
-      response = rd5_request(params_comm_unit.merge(_t: "config/texts.xml"))
+      response = rd5_unit_request(params_comm_unit.merge(_t: "config/texts.xml"))
       xml = Nokogiri::XML response.body
       @user_texts = xml.xpath("//i").map do |node|
         value = node.attributes["value"].value
         id = node.attributes["id"].value
-        [id, value.gsub(/%u([\dA-Z]{4})/) { |i| +'' << i[$1].to_i(16) }]
+        [id, value.gsub(/%u([\dA-Z]{4})/) { |i| +"" << i[Regexp.last_match(1)].to_i(16) }]
       end.to_h
+    end
+
+    # quit selenium browser
+    def close
+      driver.quit
+    ensure
+      remove_instance_variable :@driver
+    end
+
+    alias logout! close
+
+    def as_json(_options = nil)
+      {
+        current_mode: current_mode,
+        current_power: current_power,
+        outdoor_temperature: outdoor_temperature,
+        valid_for: valid_for,
+      }
+    end
+
+    alias values as_json
+
+    def to_json(*args)
+      as_json.to_json(*args)
+    end
+
+    # @note `ver` is done by atrea server
+    def params_comm_unit
+      {
+        _user: user_id.to_i,
+        _unit: unit_id,
+        auth: auth_token || "null",
+        ver: CONTROL_VERSION,
+      }
+    end
+
+    def rd5_unit_request(params)
+      RestClient.get "https://control.atrea.eu/comm/sw/unit.php", params: params
+    end
+
+    def call_unit!
+      return false if @login_in_progress
+
+      logger.debug "call_unit!"
+      reader = DuplexValues.new self
+      data = reader.call
+      assign_values(data)
     end
 
     private
 
-    # @see scripts.php -> loadRD5Values(node, init)
-    # @note
-    #   if(values[key]>32767) values[key]-=65536;
-    # 			if(params[key] && params[key].offset)
-    # 				values[key]=values[key]-params[key].offset;
-    # 			if(params[key] && params[key].coef)
-    # 				values[key]=values[key]/params[key].coef;
-    def parse_values(response)
-      xml = Nokogiri::XML response.body
-      sensors_values = @sensors.transform_values do |id|
-        value = xml.xpath("//O[@I=\"#{id}\"]/@V").last&.value.to_i
-        value -= 65_536 if value > 32_767
-        # value -= 0 if "offset"
-        # value -= 0 if "coef"
-        value
-      end
-      refresh_data(sensors_values)
-    end
-
+    # Used for cache
     # @param [Hash] values
-    # @return [Hash]
-    def refresh_data(values)
-      @outdoor_temperature = values[:outdoor_temperature].to_f / 10.0
-      @current_power = values[:current_power].to_f
-      @current_mode = if values[:current_mode_switch].positive?
-                        user_modes[values[:current_mode_switch].to_s]
-                      else
-                        modes[values[:current_mode].to_s]
-                      end
-      # @current_mode = mode_map[values[:current_mode_name] > 0 ? values[:current_mode_name] : values[:current_mode]]
+    # # @return [Hash]
+    def assign_values(values)
+      @outdoor_temperature = values[:outdoor_temperature]
+      @current_power = values[:current_power]
+      @current_mode = values[:current_mode]
+      @valid_for = values[:valid_for]
 
       as_json
     end
@@ -209,43 +200,23 @@ module AtreaControl
       raise Error, "unable to login"
     end
 
-    def sensor_element(sensor_id)
-      driver.find_element id: "contentBox#{sensor_id}"
-    end
-
     # @return [RestClient::Response]
-    def response_comm_unit
-      rd5_request(params_comm_unit.merge(_t: "config/xml.xml"))
-    end
+    # def response_comm_unit
+    #   rd5_unit_request(params_comm_unit.merge(_t: "config/xml.xml"))
+    # end
 
-    def rd5_request(params)
-      RestClient.get "https://control.atrea.eu/comm/sw/unit.php", { Cookie: "autoLogin=#{autologin_token}", params: params }
-    end
-
+    # Get and parse XML with user/unit configuration source
     def user_ctrl
-      response = rd5_request(params_comm_unit.merge(_t: "lang/userCtrl.xml"))
-      xml = Nokogiri::XML response.body
-    end
-
-    def autologin_token
-      @autologin_token ||= CGI.escape([@login, @password].join("\b"))
-    end
-
-    # @note `ver` is done by atrea server
-    def params_comm_unit
-      {
-        _user: user_id.to_i,
-        _unit: unit_id,
-        auth: auth_token || "null",
-        ver: "003001009",
-      }
+      response = rd5_unit_request(params_comm_unit.merge(_t: "lang/userCtrl.xml"))
+      Nokogiri::XML response.body
     end
 
     # Update tokens based on current state
     def refresh!
+      logger.debug "refresh user data based on session"
       @user_id = driver.execute_script("return window._user")
       @unit_id = driver.execute_script("return window._unit")
-      @auth_token = user&.[]("auth")
+      @auth_token = user&.[]("auth") # sid
     end
 
     # @param [Nokogiri::XML::Element] mode
@@ -265,7 +236,7 @@ module AtreaControl
     # @note internal use only
     def update_locales_files!
       { cs: "0", de: "1", en: "2" }.each do |name, atrea_id|
-        response = rd5_request(params_comm_unit.merge(_t: "lang/texts_#{atrea_id}.xml", auth: nil))
+        response = rd5_unit_request(params_comm_unit.merge(_t: "lang/texts_#{atrea_id}.xml", auth: nil))
 
         xml = Nokogiri::XML response.body
         locale = eval xml.xpath("//words/text()")[0].text

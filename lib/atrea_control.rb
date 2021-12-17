@@ -8,6 +8,7 @@ module AtreaControl
   class Error < StandardError; end
 
   autoload :Duplex, "atrea_control/duplex"
+  autoload :DuplexValues, "atrea_control/duplex_values"
 
   I18n.load_path.concat Dir["#{File.expand_path("../config/locales", __dir__)}/*.yml"]
   I18n.default_locale = :cs

@@ -39,6 +39,7 @@ def default_sensors_map
     outdoor_temperature: "I10208",
     current_power: "H10704",
     current_mode: "H10705",
+    current_mode_switch: "H10712",
   }
 end
 ```
@@ -51,6 +52,27 @@ control.current_power # => 37.0
 ```
 
 ## Development
+
+Re-login user, add login procedure into queue:
+```bash
+curl -X POST -d "comm=config%2Flogin.cgi" "https://control.atrea.eu/apps/rd5Control/handle.php?action=unitLogin&user=XXXX&unit=NNNNNNN&table=userUnits&idPwd=YYYYYYY&NFP"
+```
+Response is time in seconds when login will ready:
+```xml
+<root><sended time="264"/></root>
+```
+Request for current queue status
+```bash
+curl 'https://control.atrea.eu/apps/rd5Control/handle.php?Sync=1&action=unitQuery&query=loged&user=XXXX&unit=NNNNNNN'
+```
+if queue is processed:
+```xml
+<root><login uconn="16395889" sid="010101" ver="3001009"/></root>
+```
+else
+```xml
+<root><login uconn="16390480" sid="0"/></root>
+```
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 

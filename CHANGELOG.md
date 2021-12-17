@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [1.4.1] - 2021-12-18
+### Changed
+- little refactor
+
 ## [1.4.0] - 2021-12-12
 ### Changed
 - founded way to get config and data from Atrea server
