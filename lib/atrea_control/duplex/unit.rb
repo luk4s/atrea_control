@@ -37,13 +37,13 @@ module AtreaControl
 
       # @param [String] value 0 - power-off; 1 - automat
       def mode=(value)
-        v = parser.input(@user_ctrl.sensors["mode_input"], value.to_s)
-        write(v)
+        v = [parser.input(@user_ctrl.sensors["mode_input"], value.to_s)]
+        v << parser.input(@user_ctrl.sensors["mode_switch"], "2")
+        write(*v)
       end
 
       def power=(value)
-        v = [parser.input(@user_ctrl.sensors["power_input"], value.to_s)]
-        v << parser.input(@user_ctrl.sensors["mode_switch"], "2")
+        v = parser.input(@user_ctrl.sensors["power_input"], value.to_s)
         write(v)
       end
 
@@ -85,7 +85,7 @@ module AtreaControl
       # @param [Array<String>] values in format SENSOR0000VALUE
       def write(*values)
         inputs = values.to_h { |i| [i, nil] }
-        logger.debug("set RD5 #{inputs.keys}")
+        logger.debug("set RD5 #{inputs}")
         request.call({ _t: "config/xml.cgi", _w: 1 }.merge(inputs))
       end
     end

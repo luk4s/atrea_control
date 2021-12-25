@@ -4,6 +4,7 @@ module AtreaControl
   module Duplex
     # Process request with duplex unit itself. Handle response
     class Request
+      include AtreaControl::Logger
 
       # @param [String, Integer] user_id
       # @param [String, Integer] unit_id

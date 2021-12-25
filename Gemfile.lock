@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    atrea_control (2.0.0)
+    atrea_control (2.0.1)
       i18n (~> 1.8)
       nokogiri (~> 1.12)
       rest-client (~> 2.1)
