@@ -1,4 +1,11 @@
 ## [Unreleased]
+### Changed
+- refactored codebase to more readable classes
+- selenium used only for login and then close => obtain SID (and user with unit)
+- login waiting mechanism
+### Added
+- found way how to change mode & power (tell unit to change)
+
 ## [1.4.1] - 2021-12-18
 ### Changed
 - little refactor

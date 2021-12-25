@@ -10,7 +10,9 @@ This gem provide simple DSL by parsing content of https://control.atrea.eu with 
   * temperature
   * fan power
   * power mode
-
+* allow change
+  * power
+  * mode
 
 ## Installation
 
@@ -30,28 +32,33 @@ Or install it yourself as:
 
 ## Usage
 
-UI map of sensors is required = each box have own ID contains sensor ID. Its required for correct element lookup.
-
-Default sensor map:
+At the begin you need obtain `user_id`, `unit_id` and `sid` (auth token). For this use "Login"
 ```ruby
-def default_sensors_map
-  {
-    outdoor_temperature: "I10208",
-    current_power: "H10704",
-    current_mode: "H10705",
-    current_mode_switch: "H10712",
-  }
-end
+tokens = AtreaControl::Duplex::Login.user_tokens login: "myhome", password: "sup3r-S3CR3T-kocicka"
+tokens # => { user_id: "1234", unit_id: "85425324672", sid: 4012 }
 ```
+I recommend to store then somewhere... 
+Then you can call Unit for data...
+
 Example usage:
 ```ruby
-control = AtreaControl::Duplex.new login: "myhome", password: "sup3r-S3CR3T-kocicka", sensors_map: { current_power: "H10704" }
-control.login # => true (takes max 5.minutes)
-control.current_mode # => "Bathroom"
-control.current_power # => 37.0
+control = AtreaControl::Duplex::Unit.new user_id: "1234", unit_id: "85425324672", sid: 4012
+control.values # => { current_power: 88.0, current_mode: "CO2" }
+control.power # => 88.0 
 ```
+### Dig deeper
+`AtreaControl::Duplex::Unit` expect optional argument `user_ctrl` which should be object respond to 
 
-## Development
+`name` (String) = Name of unit
+`sensors` (Hash) = Map of sensors, for example: `{ outdoor_temperature: "HI10208", current_power: "H10704" }`
+`modes` (Hash) = Is a map of "changable" modes - in unit its something like "builtin?" modes. They are translated by unit lang - `{ "0" => "Vypnuto", "1" => "Automat" }` 
+`user_modes` (Hash) = Is a map user specific modes, based on home switches / devices (D1, D2, D3, IN1, IN2 ...). They are translated by user texts - `{ "D1" => "Koupelna", "D2" => "CO2", "IN1" => "ovladač" }`
+
+__Please check [lib/atrea_control/duplex/user_ctrl.rb](./lib/atrea_control/duplex/user_ctrl.rb) for more details !__
+
+## Development / TODO
+Login is currently done by selenium - fill login form. 
+I found that Atre submit form to BE, generate some "empty" HTML and JS which onLoad start doing request to queue for "login".
 
 Re-login user, add login procedure into queue:
 ```bash
@@ -61,6 +68,9 @@ Response is time in seconds when login will ready:
 ```xml
 <root><sended time="264"/></root>
 ```
+Based it su shown countdown ...
+
+
 Request for current queue status
 ```bash
 curl 'https://control.atrea.eu/apps/rd5Control/handle.php?Sync=1&action=unitQuery&query=loged&user=XXXX&unit=NNNNNNN'
@@ -73,6 +83,8 @@ else
 ```xml
 <root><login uconn="16390480" sid="0"/></root>
 ```
+
+Goal is to obtain "SID".
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
