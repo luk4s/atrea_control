@@ -6,6 +6,8 @@ module AtreaControl
   # Call RD5 unit ang get current sensors values
   #   parse it and return Hash
   class SensorParser
+    include AtreaControl::Logger
+
     # @param [AtreaControl::Duplex::UserCtrl] user_ctrl
     def initialize(user_ctrl)
       @user_ctrl = user_ctrl
@@ -29,10 +31,13 @@ module AtreaControl
     def parse(xml)
       xml = Nokogiri::XML xml
       @user_ctrl.sensors.transform_values do |id|
-        value = xml.xpath("//O[@I=\"#{id}\"]/@V").last&.value.to_i
+        # node = xml.xpath("//O[@I=\"#{id}\"]/@V").last
+        node = xml.xpath("//O[@I=\"#{id}\"]").last
+        logger.debug node.to_s
+        value = node.attribute("V").value.to_i
         value -= 65_536 if value > 32_767
         # value -= 0 if "offset"
-        # value -= 0 if "coef"
+        # value = value / coef if "coef"
         value
       end
     end

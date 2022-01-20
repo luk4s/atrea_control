@@ -1,3 +1,5 @@
+require "digest"
+require "rest-client"
 require "selenium-webdriver"
 
 module AtreaControl
@@ -23,6 +25,17 @@ module AtreaControl
         @login = login
         @password = password
       end
+      #
+      # def crypto_password
+      #   md5 = Digest::MD5.new
+      #   md5 << "\r\n"
+      #   md5 << @password
+      #   md5.hexdigest
+      # end
+      #
+      # def token
+      #   RestClient.get "#{AtreaControl::Duplex::CONTROL_URI}/config/login.cgi", params: { magic: crypto_password }
+      # end
 
       def user
         raise AtreaControl::Error, "Must be logged in" unless login

@@ -1,4 +1,10 @@
 ## [Unreleased]
+
+## [2.0.2] - 2022-01-20
+### Added
+- debug unit values
+- try token-based login (without success)
+
 ## [2.0.1] - 2021-12-26
 ### Fixed
 - write correct arguments

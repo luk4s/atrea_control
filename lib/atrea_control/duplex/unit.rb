@@ -67,6 +67,13 @@ module AtreaControl
         values.to_json(*args)
       end
 
+      # Additional "parameters" for each sensors
+      # @note its changed in time ?
+      def params
+        response = request.call(_t: "user/params.xml")
+        Nokogiri::XML response.body
+      end
+
       private
 
       def parser
