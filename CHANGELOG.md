@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+## [2.1.0] - 2022-02-28
+### Added
+- preheating  is ON ?
+- heat temperature
+- current input temperature
+### Removed
+- debug
+
 ## [2.0.2] - 2022-01-20
 ### Added
 - debug unit values

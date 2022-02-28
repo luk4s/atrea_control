@@ -6,7 +6,9 @@ module AtreaControl
     class Unit
       include AtreaControl::Logger
 
-      attr_reader :current_mode, :current_power, :outdoor_temperature
+      attr_reader :current_mode, :current_power, :outdoor_temperature, :preheat_temperature, :input_temperature
+      # @return [Boolean] preheating air is ON ?
+      attr_reader :preheating
       # @return [DateTime] store time of last update
       attr_reader :valid_for
       # @return [UserCtrl]
@@ -35,6 +37,10 @@ module AtreaControl
         current_power || values[:current_power]
       end
 
+      def preheating?
+        preheating || values[:preheating]
+      end
+
       # @param [String] value 0 - power-off; 1 - automat
       def mode=(value)
         v = [parser.input(@user_ctrl.sensors["mode_input"], value.to_s)]
@@ -47,8 +53,12 @@ module AtreaControl
         write(v)
       end
 
+      def parsed
+        parser.values(read.body)
+      end
+
       def values
-        parser.values(read.body).each do |name, value|
+        parsed.each do |name, value|
           instance_variable_set :"@#{name}", value
         end
         as_json
@@ -59,6 +69,9 @@ module AtreaControl
           current_mode: current_mode,
           current_power: current_power,
           outdoor_temperature: outdoor_temperature,
+          preheat_temperature: preheat_temperature,
+          input_temperature: input_temperature,
+          preheating: preheating,
           valid_for: valid_for,
         }
       end

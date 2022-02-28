@@ -54,8 +54,14 @@ module AtreaControl
         power_input = power.xpath("onchange").text[/getUrlPar\('(\w+)',val\)/, 1]
         m = mode.xpath("onchange").text.match(/getUrlPar\('(\w+)',val\).*getUrlPar\(.(\w+).,2\)/)
 
+        preheat_temperature = user_ctrl.xpath("//body/content/i[@title='$requiredTemp']")
+
+        input_temp = user_ctrl.xpath("//body/content/i[@title='$inletTemp']") # "I10200"
+        input_temperature = input_temp.xpath("displayval").text[/val=values\.(\w\d+);/, 1]
         @sensors = {
           "outdoor_temperature" => outdoor_temp.attribute("id").value, # "I10208"
+          "preheat_temperature" => preheat_temperature.attribute("id").value, # "H10706"
+          "input_temperature" => input_temperature,
           "current_power" => power.attribute("id").value, # "H10704"
           "current_mode" => mode.attribute("id").value, # "H10705"
           "current_mode_switch" => switch_mode, # "H10712"

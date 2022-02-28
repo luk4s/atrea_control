@@ -48,6 +48,10 @@ RSpec.describe AtreaControl::Duplex::Unit do
       expect(unit.mode).to eq "CO2"
     end
 
+    it "preheating?" do
+      expect(unit.preheating?).to eq true
+    end
+
   end
 
   describe "#power=" do
