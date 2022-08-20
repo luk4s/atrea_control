@@ -1,4 +1,6 @@
 ## [Unreleased]
+### Fixed
+- override "schedule program" by "temporary"
 
 ## [2.1.0] - 2022-02-28
 ### Added

@@ -49,8 +49,10 @@ module AtreaControl
       end
 
       def power=(value)
-        v = parser.input(@user_ctrl.sensors["power_input"], value.to_s)
-        write(v)
+        v = [parser.input(@user_ctrl.sensors["power_input"], value.to_s)]
+        # overtake schedule control
+        v << "H1070000002" if value.to_i.positive?
+        write(*v)
       end
 
       def parsed
