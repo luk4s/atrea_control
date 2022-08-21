@@ -1,6 +1,10 @@
 ## [Unreleased]
+
+## [2.1.1] - 2022-08-21
 ### Fixed
 - override "schedule program" by "temporary"
+### Changed
+- dependencies update
 
 ## [2.1.0] - 2022-02-28
 ### Added
