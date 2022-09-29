@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    atrea_control (2.1.0)
+    atrea_control (2.1.1)
       i18n (~> 1.8)
       nokogiri (~> 1.12)
       rest-client (~> 2.1)
@@ -84,7 +84,7 @@ GEM
       rubocop (~> 1.31)
     ruby-progressbar (1.11.0)
     rubyzip (2.3.2)
-    selenium-webdriver (4.4.0)
+    selenium-webdriver (4.5.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
