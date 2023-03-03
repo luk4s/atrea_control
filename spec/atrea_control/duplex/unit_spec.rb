@@ -33,7 +33,6 @@ RSpec.describe AtreaControl::Duplex::Unit do
     end
 
     describe "#to_json" do
-
       it "parsed json" do
         json = JSON.parse(unit.to_json)
         expect(json).to include("current_power" => 88.0, "outdoor_temperature" => 9.3)
@@ -49,13 +48,11 @@ RSpec.describe AtreaControl::Duplex::Unit do
     end
 
     it "preheating?" do
-      expect(unit.preheating?).to eq true
+      expect(unit.preheating?).to be true
     end
-
   end
 
   describe "#power=" do
-
     it "with number" do
       expect(request).to receive(:call).with(hash_including(_t: "config/xml.cgi"))
       unit.power = 63

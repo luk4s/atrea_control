@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "digest"
 require "rest-client"
 require "selenium-webdriver"
@@ -6,7 +8,6 @@ module AtreaControl
   module Duplex
     # Process login into RD5 with selenium to get `sid` ( auth_token ) for direct API communication
     class Login
-
       include AtreaControl::Logger
 
       # @return [Hash] - user_id, unit_id, sid
@@ -52,9 +53,12 @@ module AtreaControl
       def driver
         return @driver if defined?(@driver)
 
+        # options = Selenium::WebDriver::Firefox::Options.new
+        # options.headless! unless ENV["NO_HEADLESS"]
+        # @driver ||= Selenium::WebDriver.for :firefox, capabilities: [options]
         options = Selenium::WebDriver::Firefox::Options.new
-        options.headless! unless ENV["NO_HEADLESS"]
-        @driver ||= Selenium::WebDriver.for :firefox, capabilities: [options]
+        options.add_argument "-headless" unless ENV["NO_HEADLESS"]
+        @driver ||= Selenium::WebDriver::Firefox::Driver.new options: options
       end
 
       # Login into control
@@ -95,7 +99,11 @@ module AtreaControl
 
       # quit selenium browser
       def close
-        driver.quit rescue nil
+        begin
+          driver.quit
+        rescue StandardError
+          nil
+        end
         logger.debug "driver closed & destroyed"
       ensure
         remove_instance_variable :@driver
@@ -114,7 +122,6 @@ module AtreaControl
         File.write("/tmp/failed_login-#{@login}.html", driver.page_source)
         raise AtreaControl::Error, "unable to login"
       end
-
     end
   end
 end

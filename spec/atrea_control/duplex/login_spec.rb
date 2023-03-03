@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 AtreaControl::Duplex::CONTROL_URI = "file://#{File.join(__dir__, "../../fixtures/files/login.html")}"
 
 RSpec.describe AtreaControl::Duplex::Login do
@@ -31,7 +33,7 @@ RSpec.describe AtreaControl::Duplex::Login do
   end
 
   describe "#user" do
-    subject { duplex.user }
+    subject(:user) { duplex.user }
 
     let(:driver) { nil }
 
@@ -41,22 +43,21 @@ RSpec.describe AtreaControl::Duplex::Login do
     end
 
     context "without login" do
-      it { expect { subject }.to raise_error AtreaControl::Error }
+      it { expect { user }.to raise_error AtreaControl::Error }
     end
 
     context "with login return credentials" do
       let(:driver) { double }
 
-      it { expect(subject).to include(user_id: match(/\d+/), unit_id: match(/\d+/), sid: be_a(Integer)) }
+      it { expect(user).to include(user_id: match(/\d+/), unit_id: match(/\d+/), sid: be_a(Integer)) }
     end
   end
 
   it ".user_tokens" do
-    dbl = double("Login")
+    dbl = spy("Login")
     allow(described_class).to receive(:new).and_return dbl
-    expect(dbl).to receive(:user).exactly 1
-    expect(dbl).to receive(:close).at_least 1
     described_class.user_tokens(login: "myhome", password: "secret")
+    expect(dbl).to have_received(:user).exactly 1
+    expect(dbl).to have_received(:close).at_least 1
   end
-
 end

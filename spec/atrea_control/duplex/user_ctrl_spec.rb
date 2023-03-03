@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe AtreaControl::Duplex::UserCtrl do
   subject(:user_ctrl) { described_class.new user_id: user_id, unit_id: unit_id, sid: sid }
 

@@ -2,6 +2,6 @@
 
 RSpec.describe AtreaControl do
   it "has a version number" do
-    expect(AtreaControl::VERSION).not_to be nil
+    expect(AtreaControl::VERSION).not_to be_nil
   end
 end
