@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rest-client"
 
 module AtreaControl
@@ -24,7 +26,6 @@ module AtreaControl
       def call(params)
         RestClient.get "#{AtreaControl::Duplex::CONTROL_URI}/comm/sw/unit.php", params: @params.merge(params)
       end
-
     end
   end
 end

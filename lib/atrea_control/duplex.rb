@@ -10,6 +10,5 @@ module AtreaControl
     autoload :Request, "atrea_control/duplex/request"
     autoload :Unit, "atrea_control/duplex/unit"
     autoload :UserCtrl, "atrea_control/duplex/user_ctrl"
-
   end
 end

@@ -13,5 +13,4 @@ module AtreaControl
 
   I18n.load_path.concat Dir["#{File.expand_path("../config/locales", __dir__)}/*.yml"]
   I18n.default_locale = :cs
-
 end

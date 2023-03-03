@@ -48,7 +48,7 @@ RSpec.shared_context "userCtrl" do
     }
   end
   let(:user_ctrl) do
-    instance_double("AtreaControl::Duplex::UserCtrl", name: user_texts["UnitName"], user_modes: user_modes,
-                                                      user_texts: user_texts, modes: modes, sensors: sensors)
+    instance_double(AtreaControl::Duplex::UserCtrl, name: user_texts["UnitName"], user_modes: user_modes,
+                                                    user_texts: user_texts, modes: modes, sensors: sensors)
   end
 end

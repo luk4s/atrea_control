@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [2.1.2] - 2023-02-03
+### Fixed
+- selenium-webdriver deprecations
+- some code-style/rubocop offenses
 ## [2.1.1] - 2022-08-21
 ### Fixed
 - override "schedule program" by "temporary"

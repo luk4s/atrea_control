@@ -1,3 +1,1 @@
-RSpec.describe AtreaControl::SensorParser do
-
-end
+# frozen_string_literal: true

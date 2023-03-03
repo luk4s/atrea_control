@@ -56,7 +56,7 @@ module AtreaControl
         "outdoor_temperature" => values["outdoor_temperature"].to_f / 10.0,
         "preheat_temperature" => values["preheat_temperature"].to_f / 10.0,
         "input_temperature" => values["input_temperature"].to_f / 10.0,
-        "preheating" => !!values["preheating"],
+        "preheating" => !values["preheating"].nil?,
         "valid_for" => Time.now,
       }
     end
