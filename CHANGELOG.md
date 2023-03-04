@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [2.1.3] - 2023-02-04
+### Fixed
+- preheating is always boolean, so no need !! => which coused reverse right now...
+
 ## [2.1.2] - 2023-02-03
 ### Fixed
 - selenium-webdriver deprecations
