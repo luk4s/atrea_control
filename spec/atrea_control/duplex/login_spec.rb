@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-AtreaControl::Duplex::CONTROL_URI = "file://#{File.join(__dir__, "../../fixtures/files/login.html")}"
+FIXTURE_LOGIN_PATH = File.join(__dir__, "../../fixtures/files/login.html")
+AtreaControl::Duplex::CONTROL_URI = "file://#{FIXTURE_LOGIN_PATH}".freeze
 
 RSpec.describe AtreaControl::Duplex::Login do
   subject(:duplex) { described_class.new login: "myhome", password: "secret" }
