@@ -5,7 +5,7 @@ require:
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.2
 
 Style/StringLiterals:
   Enabled: true
@@ -17,3 +17,6 @@ Style/StringLiteralsInInterpolation:
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either
