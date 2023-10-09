@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [2.2.0] - 2023-10-09
+### Changed
+- update dependencies
+
 ## [2.1.3] - 2023-02-04
 ### Fixed
 - preheating is always boolean, so no need !! => which coused reverse right now...

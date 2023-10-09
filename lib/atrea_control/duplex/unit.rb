@@ -78,8 +78,8 @@ module AtreaControl
         }
       end
 
-      def to_json(*args)
-        values.to_json(*args)
+      def to_json(*)
+        values.to_json(*)
       end
 
       # Additional "parameters" for each sensors
