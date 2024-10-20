@@ -43,6 +43,7 @@ module AtreaControl
       preheating = %w[C10200 C10202 C10215 C10217].any? do |i|
         xml.xpath("//O[@I=\"#{i}\"]/@V").last&.value == "1"
       end
+      parsed["timestamp"] = xml.xpath("//RD5WEB").attribute("t").to_s
       parsed["preheating"] = preheating
       parsed
     end
@@ -57,6 +58,7 @@ module AtreaControl
         "preheat_temperature" => values["preheat_temperature"].to_f / 10.0,
         "input_temperature" => values["input_temperature"].to_f / 10.0,
         "preheating" => values["preheating"],
+        "timestamp" => DateTime.parse(values["timestamp"]),
         "valid_for" => Time.now,
       }
     end

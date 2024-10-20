@@ -13,6 +13,8 @@ module AtreaControl
       attr_reader :valid_for
       # @return [UserCtrl]
       attr_reader :user_ctrl
+      # @return [Time, DateTime]
+      attr_writer :timestamp
 
       # @param [String, Integer] user_id
       # @param [String, Integer] unit_id
@@ -37,6 +39,10 @@ module AtreaControl
         current_power || values[:current_power]
       end
 
+      def timestamp
+        @timestamp ||= values[:timestamp]
+      end
+
       def preheating?
         preheating || values[:preheating]
       end
@@ -56,7 +62,7 @@ module AtreaControl
       end
 
       def parsed
-        parser.values(read.body)
+        @parsed ||= parser.values(read.body)
       end
 
       def values
@@ -75,6 +81,7 @@ module AtreaControl
           input_temperature: input_temperature,
           preheating: preheating,
           valid_for: valid_for,
+          timestamp: timestamp,
         }
       end
 

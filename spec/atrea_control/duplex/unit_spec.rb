@@ -50,6 +50,13 @@ RSpec.describe AtreaControl::Duplex::Unit do
     it "preheating?" do
       expect(unit.preheating?).to be true
     end
+
+    describe "#timestamp" do
+      subject(:timestamp) { unit.timestamp }
+
+      it { is_expected.to be_a DateTime }
+      it { is_expected.to eq DateTime.parse("2021-10-26 21:45:51") }
+    end
   end
 
   describe "#power=" do

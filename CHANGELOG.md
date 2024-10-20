@@ -1,4 +1,9 @@
 ## [Unreleased]
+### Added
+- timestamp from atrea server
+### Changed
+- upgrade dependencies
+- upgrade ruby version
 
 ## [2.2.0] - 2023-10-09
 ### Changed
