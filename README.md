@@ -58,7 +58,7 @@ __Please check [lib/atrea_control/duplex/user_ctrl.rb](./lib/atrea_control/duple
 
 ## Development / TODO
 Login is currently done by selenium - fill login form. 
-I found that Atre submit form to BE, generate some "empty" HTML and JS which onLoad start doing request to queue for "login".
+I found that Atrea submit form to BE, generate some "empty" HTML and JS which onLoad start doing request to queue for "login".
 
 Re-login user, add login procedure into queue:
 ```bash
