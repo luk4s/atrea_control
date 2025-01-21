@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Get data control.atrea.eu"
   spec.description = "Read data from web controller of RD5 duplex by Atrea."
   spec.homepage = "https://github.com/luk4s/atrea_control"
-  spec.required_ruby_version = Gem::Requirement.new("~> 3.2")
+  spec.required_ruby_version = Gem::Requirement.new("~> 3.3")
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
@@ -39,5 +39,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency "i18n", "~> 1.14"
   spec.add_dependency "nokogiri", "~> 1.15"
   spec.add_dependency "rest-client", "~> 2.1"
-  spec.add_dependency "selenium-webdriver", "~> 4.25.0"
 end
