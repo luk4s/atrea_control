@@ -9,8 +9,6 @@ module AtreaControl
       attr_reader :current_mode, :current_power, :outdoor_temperature, :preheat_temperature, :input_temperature
       # @return [Boolean] preheating air is ON ?
       attr_reader :preheating
-      # @return [DateTime] store time of last update
-      attr_reader :valid_for
       # @return [UserCtrl]
       attr_reader :user_ctrl
       # @return [Time, DateTime]
@@ -80,7 +78,6 @@ module AtreaControl
           preheat_temperature: preheat_temperature,
           input_temperature: input_temperature,
           preheating: preheating,
-          valid_for: valid_for,
           timestamp: timestamp,
         }
       end
@@ -89,14 +86,28 @@ module AtreaControl
         values.to_json(*)
       end
 
-      # Additional "parameters" for each sensors
-      # @note its changed in time ?
+      # Expire cached data and fetch them again
+      # @return [Hash] new values
+      def refresh!
+        remove_instance_variable(:@parsed) if defined?(@parsed)
+        values
+      end
+
+      # Data are valid if timestamp within 15.minutes
+      def valid?
+        return false unless timestamp
+
+        timestamp > (Time.now - (15 * 60.0))
+      end
+
+      private
+
+      # Additional "parameters" for each sensor
+      # @note it's changed in time ?
       def params
         response = request.call(_t: "user/params.xml")
         Nokogiri::XML response.body
       end
-
-      private
 
       def parser
         @parser ||= ::AtreaControl::SensorParser.new(@user_ctrl)

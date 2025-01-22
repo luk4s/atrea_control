@@ -6,6 +6,7 @@ require "yaml"
 
 module AtreaControl
   class Error < StandardError; end
+  class Expired < Error; end
 
   autoload :Duplex, "atrea_control/duplex"
   autoload :Logger, "atrea_control/logger"

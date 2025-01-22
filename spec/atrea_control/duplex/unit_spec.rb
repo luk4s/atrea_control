@@ -54,8 +54,8 @@ RSpec.describe AtreaControl::Duplex::Unit do
     describe "#timestamp" do
       subject(:timestamp) { unit.timestamp }
 
-      it { is_expected.to be_a DateTime }
-      it { is_expected.to eq DateTime.parse("2021-10-26 21:45:51") }
+      it { is_expected.to be_a Time }
+      it { is_expected.to eq Time.parse("2021-10-26 21:45:51") }
     end
   end
 
@@ -75,6 +75,49 @@ RSpec.describe AtreaControl::Duplex::Unit do
     it "with number" do
       expect(request).to receive(:call).with(hash_including(_t: "config/xml.cgi"))
       unit.mode = 1
+    end
+  end
+
+  describe "#refresh!" do
+    let(:parser) { instance_double(AtreaControl::SensorParser) }
+
+    before do
+      allow(unit).to receive(:read).and_return spy(body: "<xml></xml>")
+      allow(unit).to receive(:parser).and_return parser
+      allow(parser).to receive(:values).and_return({ timestamp: 1 }, { timestamp: 2 })
+    end
+
+    # rubocop:disable RSpec/ExampleLength
+    it "remove cached values" do
+      aggregate_failures "demonstrate cache" do
+        expect(unit.values).to include timestamp: 1
+        expect(unit.values).to include timestamp: 1
+      end
+      expect(unit.refresh!).to include timestamp: 2
+      expect(unit.values).to include timestamp: 2
+    end
+    # rubocop:enable RSpec/ExampleLength
+  end
+
+  describe "#valid?" do
+    subject(:valid?) { unit.valid? }
+
+    context "when timestamp is nil" do
+      before { allow(unit).to receive(:timestamp).and_return nil }
+
+      it { is_expected.to be false }
+    end
+
+    context "when timestamp is older than 15 minutes" do
+      before { allow(unit).to receive(:timestamp).and_return Time.now - (20 * 60.0) }
+
+      it { is_expected.to be false }
+    end
+
+    context "when timestamp is newer than 15 minutes" do
+      before { allow(unit).to receive(:timestamp).and_return Time.now - (10 * 60.0) }
+
+      it { is_expected.to be true }
     end
   end
 end
