@@ -6,7 +6,12 @@ require "yaml"
 
 module AtreaControl
   class Error < StandardError; end
-  class Expired < Error; end
+
+  class SessionExpired < Error
+    def message
+      "Session expired. Please perform login again."
+    end
+  end
 
   autoload :Duplex, "atrea_control/duplex"
   autoload :Logger, "atrea_control/logger"

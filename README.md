@@ -1,7 +1,7 @@
 # atrea_control
 Ventilation systems by https://www.atrea.eu are build with web UI portal - but this portal did not provide any API interface...
 
-This gem provide simple DSL by parsing content of https://control.atrea.eu with selenium webdriver.
+This gem provide way how to connect to portal and obtain data from unit as API.
 
 ## Highlights
 
@@ -19,16 +19,24 @@ This gem provide simple DSL by parsing content of https://control.atrea.eu with 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'atrea_control'
+gem "atrea_control"
 ```
 
 And then execute:
+```bash
+bundle install
+```
 
-    $ bundle install
+Or 
+```bash
+bundle add atrea_control
+```
 
 Or install it yourself as:
 
-    $ gem install atrea_control
+```bash
+gem install atrea_control
+```
 
 ## Usage
 
@@ -55,36 +63,6 @@ control.power # => 88.0
 `user_modes` (Hash) = Is a map user specific modes, based on home switches / devices (D1, D2, D3, IN1, IN2 ...). They are translated by user texts - `{ "D1" => "Koupelna", "D2" => "CO2", "IN1" => "ovladač" }`
 
 __Please check [lib/atrea_control/duplex/user_ctrl.rb](./lib/atrea_control/duplex/user_ctrl.rb) for more details !__
-
-## Development / TODO
-Login is currently done by selenium - fill login form. 
-I found that Atrea submit form to BE, generate some "empty" HTML and JS which onLoad start doing request to queue for "login".
-
-Re-login user, add login procedure into queue:
-```bash
-curl -X POST -d "comm=config%2Flogin.cgi" "https://control.atrea.eu/apps/rd5Control/handle.php?action=unitLogin&user=XXXX&unit=NNNNNNN&table=userUnits&idPwd=YYYYYYY&NFP"
-```
-Response is time in seconds when login will ready:
-```xml
-<root><sended time="264"/></root>
-```
-Based it su shown countdown ...
-
-
-Request for current queue status
-```bash
-curl 'https://control.atrea.eu/apps/rd5Control/handle.php?Sync=1&action=unitQuery&query=loged&user=XXXX&unit=NNNNNNN'
-```
-if queue is processed:
-```xml
-<root><login uconn="16395889" sid="010101" ver="3001009"/></root>
-```
-else
-```xml
-<root><login uconn="16390480" sid="0"/></root>
-```
-
-Goal is to obtain "SID".
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 

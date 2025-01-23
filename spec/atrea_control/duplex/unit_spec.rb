@@ -14,6 +14,7 @@ RSpec.describe AtreaControl::Duplex::Unit do
 
   before do
     allow(unit).to receive(:request).and_return(request)
+    allow(unit).to receive(:valid?).and_return(true)
   end
 
   describe "#name" do
@@ -101,6 +102,10 @@ RSpec.describe AtreaControl::Duplex::Unit do
 
   describe "#valid?" do
     subject(:valid?) { unit.valid? }
+
+    before do
+      allow(unit).to receive(:valid?).and_call_original
+    end
 
     context "when timestamp is nil" do
       before { allow(unit).to receive(:timestamp).and_return nil }

@@ -67,6 +67,8 @@ module AtreaControl
         parsed.each do |name, value|
           instance_variable_set :"@#{name}", value
         end
+        raise AtreaControl::SessionExpired unless valid?
+
         as_json
       end
 
