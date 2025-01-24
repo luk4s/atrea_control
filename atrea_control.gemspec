@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Get data control.atrea.eu"
   spec.description = "Read data from web controller of RD5 duplex by Atrea."
   spec.homepage = "https://github.com/luk4s/atrea_control"
-  spec.required_ruby_version = Gem::Requirement.new("~> 3.3")
+  spec.required_ruby_version = Gem::Requirement.new("~> 3.2")
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
