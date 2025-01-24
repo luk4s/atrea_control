@@ -4,7 +4,7 @@ module AtreaControl
   # Controller for +control.atrea.eu+
   module Duplex
     CONTROL_URI = "https://control.atrea.eu/"
-    CONTROL_VERSION = "003001009"
+    CONTROL_VERSION = "003001022"
 
     autoload :Login, "atrea_control/duplex/login"
     autoload :Request, "atrea_control/duplex/request"

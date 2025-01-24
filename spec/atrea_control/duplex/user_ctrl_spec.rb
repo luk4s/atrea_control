@@ -12,8 +12,8 @@ RSpec.describe AtreaControl::Duplex::UserCtrl do
   before do
     request = instance_double(AtreaControl::Duplex::Request)
     allow(user_ctrl).to receive(:request).and_return(request)
-    allow(request).to receive(:call).with(_t: "lang/userCtrl.xml").and_return spy(body: File.read(user_ctrl_fixture))
-    allow(request).to receive(:call).with(_t: "config/texts.xml").and_return spy(body: File.read(user_texts_fixture))
+    allow(request).to receive(:call).with(include(_t: "lang/userCtrl.xml")).and_return spy(body: File.read(user_ctrl_fixture))
+    allow(request).to receive(:call).with(include(_t: "config/texts.xml")).and_return spy(body: File.read(user_texts_fixture))
   end
 
   it "#name" do

@@ -33,7 +33,7 @@ module AtreaControl
 
       # Get and parse XML with user/unit configuration source
       def user_ctrl
-        response = request.call(_t: "lang/userCtrl.xml")
+        response = request.call(_t: "lang/userCtrl.xml", _async: 1)
         Nokogiri::XML response.body
       end
 

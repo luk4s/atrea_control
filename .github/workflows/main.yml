@@ -1,17 +1,19 @@
 name: Ruby
 
-on: [push,pull_request]
+on: [push, pull_request]
 
 jobs:
   spec:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: [3.2, 3.3, 3]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.2.2
+        ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
-    - uses: browser-actions/setup-firefox@latest
     - name: Run tests
       run: bundle exec rspec

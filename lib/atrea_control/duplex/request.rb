@@ -29,3 +29,4 @@ module AtreaControl
     end
   end
 end
+# https://control.atrea.eu/comm/sw/unit.php?ver=003001022&_user=2113&_unit=126399332270040&auth=49852&_t=config/xml.xml&_X=Ti&_async=1

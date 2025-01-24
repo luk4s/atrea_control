@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "nokogiri"
+require "time"
 
 module AtreaControl
   # Call RD5 unit ang get current sensors values
@@ -43,6 +44,7 @@ module AtreaControl
       preheating = %w[C10200 C10202 C10215 C10217].any? do |i|
         xml.xpath("//O[@I=\"#{i}\"]/@V").last&.value == "1"
       end
+      # @note timestamp seems to be localtime of creation of xml
       parsed["timestamp"] = xml.xpath("//RD5WEB").attribute("t").to_s
       parsed["preheating"] = preheating
       parsed
@@ -58,8 +60,7 @@ module AtreaControl
         "preheat_temperature" => values["preheat_temperature"].to_f / 10.0,
         "input_temperature" => values["input_temperature"].to_f / 10.0,
         "preheating" => values["preheating"],
-        "timestamp" => DateTime.parse(values["timestamp"]),
-        "valid_for" => Time.now,
+        "timestamp" => Time.strptime(values["timestamp"], "%Y-%m-%d %H:%M:%S"),
       }
     end
 

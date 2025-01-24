@@ -1,4 +1,14 @@
 ## [Unreleased]
+## [3.0.0] - 2025-01-25
+### Removed
+- selenium-based login procedure
+### Added
+- token / phpsessionid-based login in background
+- "session" validity check & expiration (exception)
+### Changed
+- ruby version 3.3+
+- 
+## [2.2.0] - 2024-10-20
 ### Added
 - timestamp from atrea server
 ### Changed
