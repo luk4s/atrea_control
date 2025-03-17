@@ -1,4 +1,10 @@
 ## [Unreleased]
+## [3.0.1] - 2025-03-17
+### Security
+- upgrade gems
+### Change
+- update rubocop (plugins)
+
 ## [3.0.0] - 2025-01-25
 ### Removed
 - selenium-based login procedure
