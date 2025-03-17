@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    atrea_control (3.0.0)
+    atrea_control (3.0.1)
       i18n (~> 1.14)
       nokogiri (~> 1.15)
       rest-client (~> 2.1)
@@ -122,4 +122,4 @@ DEPENDENCIES
   webmock (~> 3.14)
 
 BUNDLED WITH
-   2.6.3
+   2.6.6
