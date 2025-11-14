@@ -3,7 +3,7 @@ PATH
   specs:
     atrea_control (3.0.1)
       faraday (~> 2.7)
-      faraday-cookie_jar (~> 0.0.7)
+      faraday-cookie_jar (~> 0.0)
       i18n (~> 1.14)
       nokogiri (~> 1.15)
 
