@@ -1,4 +1,9 @@
 ## [Unreleased]
+## [3.1.0] - 2025-11-14
+### Changed
+- upgrade dependencies
+- replace RestClient by Faraday
+
 ## [3.0.1] - 2025-03-17
 ### Security
 - upgrade gems
