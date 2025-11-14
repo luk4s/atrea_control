@@ -24,12 +24,12 @@ module AtreaControl
       # @param [Hash] params
       # @option params [String] :_t ("config/xml.xml") file name
       def call(params)
-        connection = Faraday.new do |f|
+        @connection ||= Faraday.new do |f|
           f.request :url_encoded
           f.adapter Faraday.default_adapter
         end
 
-        connection.get("#{AtreaControl::Duplex::CONTROL_URI}/comm/sw/unit.php", @params.merge(params))
+        @connection.get("#{AtreaControl::Duplex::CONTROL_URI}/comm/sw/unit.php", @params.merge(params))
       end
     end
   end

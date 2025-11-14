@@ -145,10 +145,6 @@ module AtreaControl
         @php_session_id
       end
 
-      def headers
-        { cookies: { PHPSESSID: php_session_id }, "App-name": "rd5Control" }
-      end
-
       # Create Faraday connection with cookie jar
       def connection
         @connection ||= Faraday.new do |f|
