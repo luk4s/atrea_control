@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require "nokogiri"
-require "rest-client"
+require "faraday"
+require "faraday-cookie_jar"
 require "securerandom"
 
 module AtreaControl
@@ -21,6 +22,7 @@ module AtreaControl
       def initialize(login:, password:)
         @login = login
         @password = password
+        @jar = HTTP::CookieJar.new
       end
 
       # Perform login procedure for retrieve `sid` (auth_token)
@@ -29,8 +31,14 @@ module AtreaControl
       def call
         @sid = sid
         if @sid == "0"
-          re_login = RestClient.post "#{AtreaControl::Duplex::CONTROL_URI}/apps/rd5Control/handle.php?action=unitLogin&user=#{user_id}&unit=#{unit_id}&table=userUnits&idPwd=#{unit[:iid]}&#{SecureRandom.hex(2)}&_ts=#{SecureRandom.hex(4)}",
-                                     { comm: "config/login.cgi?magic=" }, headers
+          login_url = "#{AtreaControl::Duplex::CONTROL_URI}/apps/rd5Control/handle.php?" \
+                      "action=unitLogin&user=#{user_id}&unit=#{unit_id}&table=userUnits&" \
+                      "idPwd=#{unit[:iid]}&#{SecureRandom.hex(2)}&_ts=#{SecureRandom.hex(4)}"
+          re_login = connection.post(login_url) do |req|
+            req.body = { comm: "config/login.cgi?magic=" }
+            req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
+            req.headers["App-name"] = "rd5Control"
+          end
           time = Nokogiri::XML(re_login.body).at_xpath("//sended")["time"].to_i
           logger.debug "Login in #{time} seconds..."
           time.times do
@@ -55,9 +63,11 @@ module AtreaControl
       # Retrieve user details from RD5 core.php?action=init
       # @return [Hash] - user_id, name
       def user
-        core_init = RestClient.get "#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?action=init&_ts=#{SecureRandom.hex(4)}",
-                                   headers
-        client = Nokogiri::XML(core_init.body).at_xpath("//client")
+        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?action=init&_ts=#{SecureRandom.hex(4)}") do |req|
+          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
+          req.headers["App-name"] = "rd5Control"
+        end
+        client = Nokogiri::XML(response.body).at_xpath("//client")
         user_id = client["id"]
         name = client["name"]
         logger.debug "User ID: #{user_id}, User Name: #{name}"
@@ -71,10 +81,16 @@ module AtreaControl
 
       # For some reason, this requests must be done before `unit_id` requested
       def run_rd5_app
-        RestClient.post "#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?Sync=1&action=run&object=app&lng=28&rVer=1&_ts=#{SecureRandom.hex(4)}",
-                        { name: "rd5Control", path: "apps/rd5Control/" }, headers
-        RestClient.post "#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?Sync=1&action=load&object=setting&_ts=#{SecureRandom.hex(4)}",
-                        { path: "apps/rd5Control" }, headers
+        connection.post("#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?Sync=1&action=run&object=app&lng=28&rVer=1&_ts=#{SecureRandom.hex(4)}") do |req|
+          req.body = { name: "rd5Control", path: "apps/rd5Control/" }
+          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
+          req.headers["App-name"] = "rd5Control"
+        end
+        connection.post("#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?Sync=1&action=load&object=setting&_ts=#{SecureRandom.hex(4)}") do |req|
+          req.body = { path: "apps/rd5Control" }
+          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
+          req.headers["App-name"] = "rd5Control"
+        end
       end
 
       # Retrieve overview of RD5 unit
@@ -83,9 +99,11 @@ module AtreaControl
         return @unit if @unit
 
         # run_rd5_app
-        units_table = RestClient.get "#{AtreaControl::Duplex::CONTROL_URI}/_data/data.php?Sync=1&action=getdata&rH&rE&table=userUnits&ds=rd5&_ts=#{SecureRandom.hex(4)}",
-                                     headers
-        item = Nokogiri::XML(units_table.body).at_xpath("//i")
+        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/_data/data.php?Sync=1&action=getdata&rH&rE&table=userUnits&ds=rd5&_ts=#{SecureRandom.hex(4)}") do |req|
+          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
+          req.headers["App-name"] = "rd5Control"
+        end
+        item = Nokogiri::XML(response.body).at_xpath("//i")
         unit_number = item["unit"]
         iid = item["id"]
         @unit ||= { unit_number:, iid: }
@@ -96,16 +114,20 @@ module AtreaControl
       def unit_id
         return @unit_id if @unit_id
 
-        records = RestClient.get "#{AtreaControl::Duplex::CONTROL_URI}/_data/data.php?Sync=1&action=getrecord&id=#{unit[:unit_number]}&table=units&ds=rd5&_ts=#{SecureRandom.hex(4)}",
-                                 headers
-        @unit_id ||= Nokogiri::XML(records.body).at_xpath("//table/i")["ident"]
+        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/_data/data.php?Sync=1&action=getrecord&id=#{unit[:unit_number]}&table=units&ds=rd5&_ts=#{SecureRandom.hex(4)}") do |req|
+          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
+          req.headers["App-name"] = "rd5Control"
+        end
+        @unit_id ||= Nokogiri::XML(response.body).at_xpath("//table/i")["ident"]
       end
 
       def sid
-        data = RestClient.get "#{AtreaControl::Duplex::CONTROL_URI}/apps/rd5Control/handle.php?Sync=1&action=unitQuery&query=loged&user=#{user_id}&unit=#{unit_id}&#{SecureRandom.hex(2)}&_ts=#{SecureRandom.hex(4)}",
-                              headers
-        logger.debug data.body
-        Nokogiri::XML(data.body).at_xpath("//login")["sid"]
+        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/apps/rd5Control/handle.php?Sync=1&action=unitQuery&query=loged&user=#{user_id}&unit=#{unit_id}&#{SecureRandom.hex(2)}&_ts=#{SecureRandom.hex(4)}") do |req|
+          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
+          req.headers["App-name"] = "rd5Control"
+        end
+        logger.debug response.body
+        Nokogiri::XML(response.body).at_xpath("//login")["sid"]
       end
 
       # @!group Private methods
@@ -115,14 +137,25 @@ module AtreaControl
         return @php_session_id if @php_session_id
 
         payload = { username: @login, password: @password }
-        RestClient.post "#{AtreaControl::Duplex::CONTROL_URI}?action=login", payload do |response|
-          @php_session_id = response.cookies["PHPSESSID"]
-        end
+        connection.post("#{AtreaControl::Duplex::CONTROL_URI}?action=login", payload)
+
+        # Extract PHPSESSID from cookie jar
+        cookies = @jar.cookies(URI.parse(AtreaControl::Duplex::CONTROL_URI))
+        @php_session_id = cookies.find { |c| c.name == "PHPSESSID" }&.value
         @php_session_id
       end
 
       def headers
         { cookies: { PHPSESSID: php_session_id }, "App-name": "rd5Control" }
+      end
+
+      # Create Faraday connection with cookie jar
+      def connection
+        @connection ||= Faraday.new do |f|
+          f.request :url_encoded
+          f.use :cookie_jar, jar: @jar
+          f.adapter Faraday.default_adapter
+        end
       end
     end
   end

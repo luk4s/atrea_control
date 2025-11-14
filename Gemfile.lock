@@ -2,9 +2,10 @@ PATH
   remote: .
   specs:
     atrea_control (3.0.1)
+      faraday (~> 2.7)
+      faraday-cookie_jar (~> 0.0)
       i18n (~> 1.14)
       nokogiri (~> 1.15)
-      rest-client (~> 2.1)
 
 GEM
   remote: https://rubygems.org/
@@ -21,8 +22,16 @@ GEM
     diff-lcs (1.6.2)
     docile (1.4.1)
     domain_name (0.6.20240107)
+    faraday (2.14.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-cookie_jar (0.0.8)
+      faraday (>= 0.8.0)
+      http-cookie (>= 1.0.0)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     hashdiff (1.2.1)
-    http-accept (1.7.0)
     http-cookie (1.1.0)
       domain_name (~> 0.5)
     i18n (1.14.7)
@@ -32,11 +41,8 @@ GEM
     lint_roller (1.1.0)
     logger (1.7.0)
     method_source (1.1.0)
-    mime-types (3.7.0)
-      logger
-      mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0924)
-    netrc (0.11.0)
+    net-http (0.8.0)
+      uri (>= 0.11.1)
     nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.10-x86_64-darwin)
@@ -56,11 +62,6 @@ GEM
     rainbow (3.1.1)
     rake (13.3.1)
     regexp_parser (2.11.3)
-    rest-client (2.1.0)
-      http-accept (>= 1.7.0, < 2.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     rexml (3.4.4)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
@@ -102,6 +103,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
+    uri (1.1.1)
     webmock (3.26.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
