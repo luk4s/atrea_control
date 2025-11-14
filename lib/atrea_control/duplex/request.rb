@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rest-client"
+require "faraday"
 
 module AtreaControl
   module Duplex
@@ -24,7 +24,12 @@ module AtreaControl
       # @param [Hash] params
       # @option params [String] :_t ("config/xml.xml") file name
       def call(params)
-        RestClient.get "#{AtreaControl::Duplex::CONTROL_URI}/comm/sw/unit.php", params: @params.merge(params)
+        @connection ||= Faraday.new do |f|
+          f.request :url_encoded
+          f.adapter Faraday.default_adapter
+        end
+
+        @connection.get("#{AtreaControl::Duplex::CONTROL_URI}/comm/sw/unit.php", @params.merge(params))
       end
     end
   end
