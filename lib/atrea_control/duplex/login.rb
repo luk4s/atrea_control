@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-
 require "nokogiri"
 require "faraday"
+require "http/cookie"
 require "faraday-cookie_jar"
 require "securerandom"
 

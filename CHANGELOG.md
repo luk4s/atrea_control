@@ -1,4 +1,8 @@
 ## [Unreleased]
+## [3.1.1] - 2026-04-16
+### Security
+- upgrade gems
+
 ## [3.1.0] - 2025-11-14
 ### Changed
 - upgrade dependencies
