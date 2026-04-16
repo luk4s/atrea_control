@@ -1,7 +1,8 @@
 ## [Unreleased]
-## [3.1.1] - 2026-04-16
+## [3.2.0] - 2026-04-16
 ### Security
 - upgrade gems
+- drop ruby <3.3 support
 
 ## [3.1.0] - 2025-11-14
 ### Changed
