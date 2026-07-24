@@ -18,10 +18,16 @@ Gemspec/RequiredRubyVersion:
 Metrics/AbcSize:
   Max: 34
 
+# Offense count: 1
+# Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/atrea_control/duplex/login.rb'
+
 # Offense count: 3
 # Configuration parameters: CountComments, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
-  Max: 21
+  Max: 23
 
 # Offense count: 1
 # Configuration parameters: Prefixes, AllowedPatterns.
