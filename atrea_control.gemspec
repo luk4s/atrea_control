@@ -35,8 +35,8 @@ Gem::Specification.new do |spec|
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
 
-  spec.add_dependency "faraday", "~> 2.7"
+  spec.add_dependency "faraday", "~> 2.14"
   spec.add_dependency "faraday-cookie_jar", "~> 0.0"
-  spec.add_dependency "i18n", "~> 1.14"
-  spec.add_dependency "nokogiri", "~> 1.15"
+  spec.add_dependency "i18n", "~> 1.15"
+  spec.add_dependency "nokogiri", "~> 1.16"
 end

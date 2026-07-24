@@ -2,10 +2,10 @@ PATH
   remote: .
   specs:
     atrea_control (3.2.1)
-      faraday (~> 2.7)
+      faraday (~> 2.14)
       faraday-cookie_jar (~> 0.0)
-      i18n (~> 1.14)
-      nokogiri (~> 1.15)
+      i18n (~> 1.15)
+      nokogiri (~> 1.16)
 
 GEM
   remote: https://rubygems.org/
@@ -120,11 +120,11 @@ DEPENDENCIES
   atrea_control!
   pry
   rake (~> 13.0)
-  rspec (~> 3.10)
-  rubocop (~> 1.7)
-  rubocop-rspec (~> 3.1)
+  rspec (~> 3.13)
+  rubocop (~> 1.88)
+  rubocop-rspec (~> 3.10)
   simplecov
-  webmock (~> 3.14)
+  webmock (~> 3.26)
 
 BUNDLED WITH
   4.0.10
