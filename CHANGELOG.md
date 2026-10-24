@@ -1,4 +1,8 @@
 ## [Unreleased]
+### Security
+- upgrade ruby 4.0.7
+- upgrade gems
+
 ## [3.2.0] - 2026-04-16
 ### Security
 - upgrade gems
