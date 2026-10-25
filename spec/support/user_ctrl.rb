@@ -39,10 +39,13 @@ RSpec.shared_context "userCtrl" do
   let(:sensors) do
     {
       "outdoor_temperature" => "I10208",
+      "preheat_temperature" => "H10706",
+      "input_temperature" => "I10204",
       "current_power" => "H10704",
       "current_mode" => "H10705",
       "current_mode_switch" => "H10712",
       "power_input" => "H10708",
+      "power_switch" => "H10700",
       "mode_input" => "H10709",
       "mode_switch" => "H10701",
     }

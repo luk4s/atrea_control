@@ -5,155 +5,139 @@ require "faraday"
 require "http/cookie"
 require "faraday-cookie_jar"
 require "securerandom"
+require "timeout"
+require_relative "login_session"
 
 module AtreaControl
+  # RD5 portal authentication and direct unit communication.
   module Duplex
-    # Process login into RD5 to get `sid` ( auth_token ) for direct API communication
+    # Authenticate to RD5 within one monotonic budget, returning direct API tokens.
     class Login
       include AtreaControl::Logger
 
-      # @return [Hash] - user_id, unit_id, sid
-      def self.user_tokens(login:, password:)
-        instance = new(login: login, password: password)
-        instance.call
+      HTTP_TIMEOUT = 60
+
+      def self.user_tokens(login:, password:, **)
+        new(login: login, password: password, **).call
       end
 
-      # @param [String] login
-      # @param [String] password
-      def initialize(login:, password:)
+      # Explicit keywords keep authentication, selection and independent budgets discoverable.
+      def initialize(login:, password:, unit_id: nil, timeout: 300, poll_interval: 1, open_timeout: 10, read_timeout: 60) # rubocop:disable Metrics/ParameterLists
+        { timeout:, poll_interval:, open_timeout:, read_timeout: }.each do |key, value|
+          raise ArgumentError, "#{key} must be positive and finite" unless value.is_a?(Numeric) && value.real? && value.finite? && value.positive?
+        end
+        raise ArgumentError, "timeout must not exceed 300 seconds" if timeout > 300
+
         @login = login
         @password = password
+        @unit_id = unit_id
+        @timeout = timeout
+        @poll_interval = poll_interval
+        @open_timeout = open_timeout
+        @read_timeout = read_timeout
         @jar = HTTP::CookieJar.new
       end
 
-      # Perform login procedure for retrieve `sid` (auth_token)
-      # @return [Hash] - user_id, unit_id, sid
-      # @raise [AtreaControl::Error] if login failed
+      # @return [Hash] user_id, unit_id (ident), sid
       def call
-        @sid = sid
-        if @sid == "0"
-          login_url = "#{AtreaControl::Duplex::CONTROL_URI}/apps/rd5Control/handle.php?" \
-                      "action=unitLogin&user=#{user_id}&unit=#{unit_id}&table=userUnits&" \
-                      "idPwd=#{unit[:iid]}&#{SecureRandom.hex(2)}&_ts=#{SecureRandom.hex(4)}"
-          re_login = connection.post(login_url) do |req|
-            req.body = { comm: "config/login.cgi?magic=" }
-            req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
-            req.headers["App-name"] = "rd5Control"
-          end
-          time = Nokogiri::XML(re_login.body).at_xpath("//sended")["time"].to_i
-          logger.debug "Login in #{time} seconds..."
-          time.times do
-            @sid = sid
-            break if @sid != "0"
-
-            sleep 1
-          end
-          raise AtreaControl::Error, "Login failed" if @sid == "0"
-
-          logger.debug "Login complete !"
-        else
-          logger.debug "Login is not necessary ! SID: #{@sid}"
+        @started_at = monotonic_time
+        @deadline = @started_at + @timeout
+        @poll_count = 0
+        Timeout.timeout(@timeout, Timeout::Error) do
+          authenticate
+          tokens = LoginSession.new(unit_id: @unit_id, request: method(:portal_request), wait: method(:wait_for_poll), diagnostic: method(:diagnostic)).call
+          remaining_budget
+          tokens
         end
-        { user_id:, unit_id:, sid: @sid }
+      rescue Timeout::Error
+        fail_request(AtreaControl::UnitConnectionTimeout, "Portal login deadline exceeded", "deadline_exceeded")
       end
 
       private
 
-      # @!group Login steps, order is important
+      def authenticate
+        @stage = "authentication"
+        response = http_request(:post, "#{CONTROL_URI}?action=login", { username: @login, password: @password }, allow_redirect: true)
+        fail_request(AtreaControl::AuthenticationError, "Portal authentication rejected", response.status) if Nokogiri::HTML(response.body).at_css("form#loginFrm")
 
-      # Retrieve user details from RD5 core.php?action=init
-      # @return [Hash] - user_id, name
-      def user
-        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?action=init&_ts=#{SecureRandom.hex(4)}") do |req|
-          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
-          req.headers["App-name"] = "rd5Control"
-        end
-        client = Nokogiri::XML(response.body).at_xpath("//client")
-        user_id = client["id"]
-        name = client["name"]
-        logger.debug "User ID: #{user_id}, User Name: #{name}"
-
-        { user_id:, name: }
+        cookies = @jar.cookies(URI.parse(CONTROL_URI))
+        @php_session_id = cookies.find { |cookie| cookie.name == "PHPSESSID" }&.value
+        LoginXML.value(@php_session_id, "session cookie")
       end
 
-      def user_id
-        @user_id ||= user[:user_id]
+      def portal_request(stage, method, path, params, body = nil)
+        @stage = stage
+        @poll_count += 1 if stage == "session_query"
+        url = "#{CONTROL_URI}#{path}?#{URI.encode_www_form(params.merge(_ts: SecureRandom.hex(4)))}"
+        http_request(method, url, body) do |request|
+          request.headers["Cookie"] = "PHPSESSID=#{@php_session_id}"
+          request.headers["App-name"] = "rd5Control"
+        end.body
       end
 
-      # For some reason, this requests must be done before `unit_id` requested
-      def run_rd5_app
-        connection.post("#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?Sync=1&action=run&object=app&lng=28&rVer=1&_ts=#{SecureRandom.hex(4)}") do |req|
-          req.body = { name: "rd5Control", path: "apps/rd5Control/" }
-          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
-          req.headers["App-name"] = "rd5Control"
-        end
-        connection.post("#{AtreaControl::Duplex::CONTROL_URI}/core/core.php?Sync=1&action=load&object=setting&_ts=#{SecureRandom.hex(4)}") do |req|
-          req.body = { path: "apps/rd5Control" }
-          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
-          req.headers["App-name"] = "rd5Control"
-        end
-      end
-
-      # Retrieve overview of RD5 unit
-      # @return [Hash] - unit_number (digit code/ID from list) and iid (unit salt?)
-      def unit
-        return @unit if @unit
-
-        # run_rd5_app
-        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/_data/data.php?Sync=1&action=getdata&rH&rE&table=userUnits&ds=rd5&_ts=#{SecureRandom.hex(4)}") do |req|
-          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
-          req.headers["App-name"] = "rd5Control"
-        end
-        item = Nokogiri::XML(response.body).at_xpath("//i")
-        unit_number = item["unit"]
-        iid = item["id"]
-        @unit ||= { unit_number:, iid: }
-      end
-
-      # With `unit_number` from `unit` method, get `unit_id` from RD5 unit records
-      # @return [String] - unit_id
-      def unit_id
-        return @unit_id if @unit_id
-
-        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/_data/data.php?Sync=1&action=getrecord&id=#{unit[:unit_number]}&table=units&ds=rd5&_ts=#{SecureRandom.hex(4)}") do |req|
-          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
-          req.headers["App-name"] = "rd5Control"
-        end
-        @unit_id ||= Nokogiri::XML(response.body).at_xpath("//table/i")["ident"]
-      end
-
-      def sid
-        response = connection.get("#{AtreaControl::Duplex::CONTROL_URI}/apps/rd5Control/handle.php?Sync=1&action=unitQuery&query=loged&user=#{user_id}&unit=#{unit_id}&#{SecureRandom.hex(2)}&_ts=#{SecureRandom.hex(4)}") do |req|
-          req.headers["Cookie"] = "PHPSESSID=#{php_session_id}"
-          req.headers["App-name"] = "rd5Control"
-        end
-        logger.debug response.body
-        Nokogiri::XML(response.body).at_xpath("//login")["sid"]
-      end
-
-      # @!group Private methods
-
-      # @return [String] session ID from PHP BE
-      def php_session_id
-        return @php_session_id if @php_session_id
-
-        payload = { username: @login, password: @password }
-        connection.post("#{AtreaControl::Duplex::CONTROL_URI}?action=login", payload)
-
-        # Extract PHPSESSID from cookie jar
-        cookies = @jar.cookies(URI.parse(AtreaControl::Duplex::CONTROL_URI))
-        @php_session_id = cookies.find { |c| c.name == "PHPSESSID" }&.value
-        @php_session_id
-      end
-
-      # Create Faraday connection with cookie jar
       def connection
-        @connection ||= Faraday.new do |f|
-          f.request :url_encoded
-          f.use :cookie_jar, jar: @jar
-          f.adapter Faraday.default_adapter
+        @connection ||= Faraday.new do |faraday|
+          faraday.options.open_timeout = @open_timeout
+          faraday.options.timeout = @read_timeout
+          faraday.request :url_encoded
+          faraday.use :cookie_jar, jar: @jar
+          faraday.adapter(:net_http) { |http| http.max_retries = 0 }
         end
+      end
+
+      def http_request(method, url, payload = nil, allow_redirect: false, &)
+        budget = [HTTP_TIMEOUT, remaining_budget].min
+        connection.options.open_timeout = [@open_timeout, budget].min
+        connection.options.timeout = [@read_timeout, budget].min
+        # The outer flow timeout already enforces the remaining login budget.
+        response = Timeout.timeout(HTTP_TIMEOUT, Timeout::Error) { connection.public_send(method, url, payload, &) }
+        remaining_budget
+        diagnostic(@stage, response.status)
+        fail_request(AtreaControl::AuthenticationError, "Portal authentication rejected", response.status) if [401, 403].include?(response.status)
+
+        accepted = (200...300).cover?(response.status) || (allow_redirect && response.status == 302)
+        fail_request(AtreaControl::TransportError, "Portal request failed (HTTP #{response.status})", response.status) unless accepted
+
+        response
+      rescue Faraday::Error, Timeout::Error, IOError, SystemCallError, SocketError => e
+        transport_failure(e)
+      end
+
+      def transport_failure(error)
+        remaining_budget
+        wrapped = error.wrapped_exception if error.is_a?(Faraday::Error)
+        timed_out = [Faraday::TimeoutError, Timeout::Error].any? { |type| error.is_a?(type) || wrapped.is_a?(type) }
+        fail_request(AtreaControl::UnitConnectionTimeout, "Portal request timed out", "timeout") if timed_out
+
+        fail_request(AtreaControl::TransportError, "Portal connection failed", "connection_failed")
+      end
+
+      def fail_request(error_class, message, status)
+        diagnostic(@stage, status, level: :warn)
+        raise error_class, "#{message} (stage=#{@stage} status=#{status})", cause: nil
+      end
+
+      def monotonic_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      end
+
+      def remaining_budget
+        remaining = @deadline - monotonic_time
+        return remaining if remaining.positive?
+
+        fail_request(AtreaControl::UnitConnectionTimeout, "Portal login deadline exceeded", "deadline_exceeded")
+      end
+
+      def wait_for_poll
+        Kernel.sleep([@poll_interval, remaining_budget].min)
+        remaining_budget
+      end
+
+      def diagnostic(stage, status = nil, level: :debug)
+        logger.public_send(level, "stage=#{stage} status=#{status || "none"} elapsed=#{(monotonic_time - @started_at).round(3)} pollcount=#{@poll_count}")
       end
     end
+
+    private_constant :LoginXML, :LoginDiscovery, :LoginSession
   end
 end

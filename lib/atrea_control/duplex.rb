@@ -8,6 +8,8 @@ module AtreaControl
 
     autoload :Login, "atrea_control/duplex/login"
     autoload :Request, "atrea_control/duplex/request"
+    autoload :RD5Configuration, "atrea_control/duplex/rd5_configuration"
+    autoload :RD5Command, "atrea_control/duplex/rd5_command"
     autoload :Unit, "atrea_control/duplex/unit"
     autoload :UserCtrl, "atrea_control/duplex/user_ctrl"
   end
