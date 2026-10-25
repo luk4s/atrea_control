@@ -7,6 +7,13 @@ require "yaml"
 module AtreaControl
   class Error < StandardError; end
 
+  class AuthenticationError < Error; end
+  class TransportError < Error; end
+  class UnitConnectionTimeout < TransportError; end
+  class ProtocolError < Error; end
+  class UnsupportedConfiguration < Error; end
+  class WriteNotConfirmed < Error; end
+
   class SessionExpired < Error
     def message
       "Session expired. Please perform login again."

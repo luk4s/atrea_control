@@ -39,4 +39,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "faraday-cookie_jar", "~> 0.0"
   spec.add_dependency "i18n", "~> 1.15"
   spec.add_dependency "nokogiri", "~> 1.16"
+  spec.add_dependency "tzinfo", "~> 2.0"
 end
