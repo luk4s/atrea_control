@@ -1,8 +1,6 @@
 ## [Unreleased]
-### Release planning
-- The behavioral changes below require a **major** upgrade from 3.2.x.
-  Publishing remains a separate step; nothing is published by these changes.
 
+## [4.0.0] - 2026-10-26
 ### Breaking changes
 - Reject `nil` (formerly liable to become zero), booleans, negative/fractional
   values and malformed setter strings with `ArgumentError`; never truncate or clamp.
@@ -16,7 +14,7 @@
   fabricated zero. Add `required_temperature` reader/hash key while retaining
   historical `preheat_temperature`; both mean requested temperature.
 
-### Correctness and APIs
+### Change
 - Export JSON-safe `input_temperature_source` in `UserCtrl.data` so persisted
   configuration retains conditional inlet sensor selection. Custom `user_ctrl:`
   objects should expose that metadata; the unreleased `input_temperature_profile`
