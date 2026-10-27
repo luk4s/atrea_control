@@ -22,7 +22,7 @@ GEM
       rexml
     diff-lcs (1.6.2)
     domain_name (0.7.20261007)
-    faraday (2.15.0)
+    faraday (2.15.1)
       faraday-net_http (>= 2.0, < 3.6)
       json
       logger
